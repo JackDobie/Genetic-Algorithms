@@ -43,6 +43,7 @@
     <ClCompile Include="AIController.cpp">
       <Filter>AI Code</Filter>
     </ClCompile>
+    <ClCompile Include="GA.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clickable.h">
@@ -89,6 +90,9 @@
     </ClInclude>
     <ClInclude Include="AIController.h">
       <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GA.h">
+      <Filter>Game Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

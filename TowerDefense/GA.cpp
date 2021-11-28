@@ -11,7 +11,7 @@ GA::~GA()
 
 void GA::Update()
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < POP_SIZE; i++)
 	{
 		popnext[i] = popcurrent[i];
 	}
@@ -20,64 +20,60 @@ void GA::Update()
 	Crossover(popnext);
 	Mutation(popnext);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < POP_SIZE; i++)
 	{
 		popcurrent[i] = popnext[i];
 	}
 }
 
-void GA::evpop(chrom popcurrent[4])
+void GA::evpop(chrom popcurrent[POP_SIZE])
 {
 	int random;
-	int value;
-	for (int i = 0; i < 4; i++)
+	//int value;
+	for (int i = 0; i < POP_SIZE; i++)
 	{
-		for (int j = 0; j < 6; j++)
+		for (int j = 0; j < CHROM_BITS; j++)
 		{
-			random = rand() % 2;
+			random = rand() % towerBit::thrower;
 			popcurrent[i].bit[j] = random;
 		}
-		value = x(popcurrent[i]);
-		popcurrent[i].fit = y(x(popcurrent[i]));
-		printf("\n popcurrent[%d]=%d%d%d%d%d%d    value=%d    fitness = %d", i,
-			popcurrent[i].bit[5], popcurrent[i].bit[4], popcurrent[i].bit[3], popcurrent[i].bit[2],
-			popcurrent[i].bit[1], popcurrent[i].bit[0], value, popcurrent[i].fit);
+		//value = x(popcurrent[i]);
+		//popcurrent[i].fit = y(x(popcurrent[i]));
+		std::cout << "popcurrent[" << i << "] "/*Value: " << value*/ << ", Fitness = " << popcurrent[i].fit << std::endl;
+		//printf("\n popcurrent[%d]=%d%d%d%d%d%d    value=%d    fitness = %d", i, popcurrent[i].bit[5], popcurrent[i].bit[4], popcurrent[i].bit[3], popcurrent[i].bit[2],	popcurrent[i].bit[1], popcurrent[i].bit[0], value, popcurrent[i].fit);
 	}
 }
 
-int GA::x(chrom popcurrent)
-{
-	int z = (popcurrent.bit[0] * 1) + (popcurrent.bit[1] * 2) + (popcurrent.bit[2] * 4) + (popcurrent.bit[3] * 8) + (popcurrent.bit[4] * 16);
-	if (popcurrent.bit[5] == 1)
-	{
-		z = z * (-1);
-	}
-	return 0;
-}
+//int GA::x(chrom popcurrent)
+//{
+//	int z = (popcurrent.bit[0] * 1) + (popcurrent.bit[1] * 2) +(popcurrent.bit[2] * 4) + (popcurrent.bit[3] * 8) + (popcurrent.bit[4] * 16);
+//	if (popcurrent.bit[5] == 1)
+//	{
+//		z = z * (-1);
+//	}
+//	return(z);
+//}
+//
+//int GA::y(int x)
+//{
+//	int y = -(x * x) + 5;
+//	return(y);
+//}
 
-int GA::y(int x)
-{
-	int y = -(x * x) + 5;
-	return(y);
-}
-
-void GA::PickChroms(chrom popcurrent[4])
+void GA::PickChroms(chrom popcurrent[POP_SIZE])
 {
 	chrom temp;
 	for (int i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		if (popcurrent[i + 1].fit > popcurrent[i].fit)
 		{
-			if (popcurrent[j + 1].fit > popcurrent[j].fit)
-			{
-				temp = popcurrent[j + 1];
-				popcurrent[j + 1] = popcurrent[j];
-				popcurrent[j] = temp;
-			}
+			temp = popcurrent[i + 1];
+			popcurrent[i + 1] = popcurrent[i];
+			popcurrent[i] = temp;
 		}
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < POP_SIZE; i++)
 	{
 		std::cout << "\nSorting: popnext[" << i << "] fitness=" << popcurrent[i].fit;
 		//printf("\nSorting:popnext[%d] fitness=%d", i, popcurrent[i].fit); // print the result
@@ -85,42 +81,41 @@ void GA::PickChroms(chrom popcurrent[4])
 	std::cout << std::endl;
 }
 
-void GA::Crossover(chrom popnext[4])
+void GA::Crossover(chrom popnext[POP_SIZE])
 {
-	int random = (rand() % 5) + 1;
+	int random = (rand() % POP_SIZE) + 1;
 	for (int i = 0; i < random; i++)
 	{
 		popnext[2].bit[i] = popnext[0].bit[i];
 		popnext[3].bit[i] = popnext[1].bit[i];
 	}
 
-	for (int i = random; i < 6; i++)
+	for (int i = random; i < CHROM_BITS; i++)
 	{
 		popnext[2].bit[i] = popnext[1].bit[i];
 		popnext[3].bit[i] = popnext[0].bit[i];
 	}
 
-	for (int i = 0; i < 4; i++)
+	/*for (int i = 0; i < POP_SIZE; i++)
 	{
 		popnext[i].fit = y(x(popnext[i]));
-	}
+	}*/
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < POP_SIZE; i++)
 	{
-		printf("\nCrossOver popnext[%d]=%d%d%d%d%d%d    value=%d    fitness = %d", i,
-			popnext[i].bit[5], popnext[i].bit[4], popnext[i].bit[3], popnext[i].bit[2],
-			popnext[i].bit[1], popnext[i].bit[0], x(popnext[i]), popnext[i].fit);
+		std::cout << "popcurrent[" << i << "] "/*Value: " << x(popnext[i])*/ << ", Fitness = " << popcurrent[i].fit;
+		//printf("\nCrossOver popnext[%d]=%d%d%d%d%d%d    value=%d    fitness = %d", i, popnext[i].bit[5], popnext[i].bit[4], popnext[i].bit[3], popnext[i].bit[2], popnext[i].bit[1], popnext[i].bit[0], x(popnext[i]), popnext[i].fit);
 	}
 }
 
-void GA::Mutation(chrom popnext[4])
+void GA::Mutation(chrom popnext[POP_SIZE])
 {
 	int random = rand() % 50;
 
 	if (random == 25)
 	{
-		int col = rand() % 6;
-		int row = rand() % 4;
+		int col = rand() % CHROM_BITS;
+		int row = rand() % POP_SIZE;
 
 		if (popnext[row].bit[col] == 0) // invert the bit
 		{
@@ -131,9 +126,9 @@ void GA::Mutation(chrom popnext[4])
 			popnext[row].bit[col] = 0;
 		}
 
-		popnext[row].fit = y(x(popnext[row]));
-		int value = x(popnext[row]);
-		printf("\nMutation occured in popnext[%d] bit[%d]:=%d%d%d%d%d%d    value=%d   fitness = % d", row, col, popnext[row].bit[5], popnext[row].bit[4], popnext[row].bit[3],
-			popnext[row].bit[2], popnext[row].bit[1], popnext[row].bit[0], value, popnext[row].fit);
+		//popnext[row].fit = y(x(popnext[row]));
+		//int value = x(popnext[row]);
+		std::cout << "Mutation occurred in popnext[" << row << "] "/*Value: " << value*/ << " Fitness : " << popnext[row].fit;
+		//printf("\nMutation occured in popnext[%d] bit[%d]:=%d%d%d%d%d%d    value=%d   fitness = % d", row, col, popnext[row].bit[5], popnext[row].bit[4], popnext[row].bit[3], popnext[row].bit[2], popnext[row].bit[1], popnext[row].bit[0], value, popnext[row].fit);
 	}
 }

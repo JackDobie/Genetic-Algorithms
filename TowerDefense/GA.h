@@ -4,13 +4,20 @@
 #include <stdio.h>
 #include <iostream>
 
-#define BOARD_WIDTH 32
-#define BOARD_HEIGHT 18
-#define POP_SIZE BOARD_WIDTH*BOARD_HEIGHT
+#define POP_SIZE 4
+#define CHROM_BITS 5
+
+enum towerBit
+{
+	empty,
+	slammer,
+	swinger,
+	thrower
+};
 
 struct chrom
 {
-	short int bit[6];
+	short int bit[CHROM_BITS];
 	int fit;
 };
 
@@ -21,13 +28,13 @@ public:
 	~GA();
 	void Update();
 private:
-	void evpop(chrom popcurrent[4]);
-	int x(chrom popcurrent);
-	int y(int x);
-	void PickChroms(chrom popcurrent[4]);
-	void Crossover(chrom popnext[4]);
-	void Mutation(chrom popnext[4]);
+	void evpop(chrom popcurrent[POP_SIZE]);
+	//int x(chrom popcurrent);
+	//int y(int x);
+	void PickChroms(chrom popcurrent[POP_SIZE]);
+	void Crossover(chrom popnext[POP_SIZE]);
+	void Mutation(chrom popnext[POP_SIZE]);
 
-	chrom popcurrent[4];
-	chrom popnext[4];
+	chrom popcurrent[POP_SIZE];
+	chrom popnext[POP_SIZE];
 };

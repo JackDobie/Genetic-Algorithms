@@ -6,6 +6,7 @@ class GameController;
 class GameBoard;
 class Timer;
 class GameState;
+class GA;
 
 class AIController
 {
@@ -29,5 +30,8 @@ private:
 	GameBoard*		m_gameBoard;
 	Timer*			m_Timer;
 	GameState*		m_gameState;
+	GA*				m_GA;
+	int				GA_iteration;
+	const int		GA_maxIteration = 10;
 };
 

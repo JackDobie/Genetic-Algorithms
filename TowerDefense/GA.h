@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <iostream>
 
+//32 x 18
+#define BOARD_WIDTH 32
+#define BOARD_HEIGHT 18
+
 #define POP_SIZE 4
 #define CHROM_BITS 5
 
@@ -17,6 +21,8 @@ enum towerBit
 
 struct chrom
 {
+	short int bitPosX[CHROM_BITS];
+	short int bitPosY[CHROM_BITS];
 	short int bit[CHROM_BITS];
 	int fit;
 };
@@ -27,6 +33,10 @@ public:
 	GA();
 	~GA();
 	void Update();
+
+	chrom* GetPop() { return popcurrent; }
+
+	void SetCurrentScore(int score);
 private:
 	void evpop(chrom popcurrent[POP_SIZE]);
 	//int x(chrom popcurrent);

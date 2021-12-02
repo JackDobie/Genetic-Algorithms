@@ -370,35 +370,11 @@ int main() {
 	aIController.setGameState(gameState);
 	aIController.setupBoard();
 
-	
-
 	gameMenuController->setDebug(debug);
 // Main game loop
 	while (window->isOpen()) {
 		sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
 		gameState->mousePos = mousePos;
-
-		// Display the help menu
-		if (gameState->getHelperState()) {
-			/*window->clear();
-			window->draw(gameBoard->helpScreen);
-			window->display();
-			while (gameState->getHelperState()) {
-				while (window->pollEvent(gameBoard->event)) {
-					if (gameBoard->event.type == sf::Event::EventType::Closed
-							|| (gameBoard->event.type == sf::Event::KeyPressed
-									&& gameBoard->event.key.code == sf::Keyboard::Escape)) {
-						delete gameBoard;
-						gameBoard = nullptr;
-						window->close();
-						return 0;
-					} else if ((gameBoard->event.type == sf::Event::MouseButtonReleased)
-							&& (gameBoard->event.mouseButton.button == sf::Mouse::Left)) {
-						gameState->toggleHelpScreen();
-					}
-				}
-			}*/
-		}
 
 		// Process
 		while (window->pollEvent(gameBoard->event)) {
@@ -417,7 +393,6 @@ int main() {
 				towerController->process(gameBoard->event, mousePos);
 			}
 		}
-
 		
 		gameMenuController->update();
 		

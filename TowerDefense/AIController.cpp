@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include <iostream>
 #include <Windows.h>
+#include "GA.h"
 
 #include "GameController.h"
 
@@ -15,6 +16,8 @@ AIController::AIController()
 	m_Timer = nullptr;
 	m_gameState = nullptr;
 
+	m_GA = new GA();
+	GA_iteration = 0;
 }
 
 AIController::~AIController()
@@ -24,6 +27,15 @@ AIController::~AIController()
 
 void AIController::gameOver()
 {
+	if (GA_iteration < GA_maxIteration)
+	{
+		m_GA->SetCurrentScore(m_gameState->getScore());
+		cout << m_gameState->getScore() << endl;
+	}
+	/*else
+	{
+		chrom* GAPopulation = m_GA->GetPop();
+	}*/
 }
 
 void AIController::update()
@@ -42,6 +54,16 @@ void AIController::update()
 	}
 
 	//GAManager::Instance()->Update(m_Timer->elapsedSeconds());
+
+	/*if (GA_iteration < GA_maxIteration)
+	{
+		m_GA->Update();
+		GA_iteration++;
+	}
+	else
+	{
+		chrom* GAPopulation = m_GA->GetPop();
+	}*/
 
 	// this might be useful? Monsters killed
 	static int monstersKilled = 0;
@@ -70,6 +92,21 @@ void AIController::addTower(TowerType type, int gridx, int gridy)
 void AIController::setupBoard()
 {
 	m_Timer->start();
+
+	m_GA->Update();
+	GA_iteration++;
+	chrom* GAPopulation = m_GA->GetPop();
+	for (int i = 0; i < POP_SIZE; i++)
+	{
+		for (int j = 0; j < CHROM_BITS; j++)
+		{
+			TowerType t = (TowerType)GAPopulation[i].bit[j];
+			int xPos = GAPopulation[i].bitPosX[j];
+			int yPos = GAPopulation[i].bitPosY[j];
+			addTower(t, xPos, yPos);
+			cout << "Add tower: " << (int)t << ", X: " << xPos << ", Y: " << yPos << endl;
+		}
+	}
 }
 
 int AIController::recordScore()
@@ -81,10 +118,10 @@ int AIController::recordScore()
 
 	static int iteration = 0;
 
-	if (iteration == 0)
+	/*if (iteration == 0)
 		cout << "iteration" << "," << "wave" << "," << "kills" << "," << "score" << endl;
 
-	cout << iteration << "," << m_gameState->getCurrentWave() << "," << m_gameState->getMonsterEliminated() << "," << score << endl;
+	cout << iteration << "," << m_gameState->getCurrentWave() << "," << m_gameState->getMonsterEliminated() << "," << score << endl;*/
 	iteration++;
 
 	m_gameState->setScore(score);

@@ -43,5 +43,5 @@ private:
 	int				GA_iteration;
 	const int		GA_maxIteration = 10;
 
-	vector<TowerInfo> TowersToAdd = vector<TowerInfo>();
+	vector<TowerInfo> towersToAdd = vector<TowerInfo>();
 };

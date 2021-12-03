@@ -5,8 +5,10 @@
 #include <iostream>
 
 //32 x 18
+#define BOARD_WIDTH_FULL 32
+#define BOARD_HEIGHT_FULL 18
 #define BOARD_WIDTH 24 // 32 is the full width but after 24 towers cannot attack the track
-#define BOARD_HEIGHT 18
+#define BOARD_HEIGHT 17 // 18 is full width but too low
 
 #define POP_SIZE 4
 #define CHROM_BITS 5

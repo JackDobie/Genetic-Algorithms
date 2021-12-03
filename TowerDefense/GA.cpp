@@ -47,10 +47,8 @@ void GA::evpop(chrom popcurrent[POP_SIZE])
 			popcurrent[i].bit[j] = random;
 			random = rand() % BOARD_WIDTH;
 			popcurrent[i].bitPosX[j] = random;
-			std::cout << random << " ";
 			random = rand() % BOARD_HEIGHT;
 			popcurrent[i].bitPosY[j] = random;
-			std::cout << random << std::endl;
 		}
 		//value = x(popcurrent[i]);
 		//popcurrent[i].fit = y(x(popcurrent[i]));

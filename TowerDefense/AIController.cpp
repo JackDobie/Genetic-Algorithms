@@ -29,13 +29,28 @@ void AIController::gameOver()
 {
 	if (GA_iteration < GA_maxIteration)
 	{
-		m_GA->SetCurrentScore(m_gameState->getScore());
+		//m_GA->SetCurrentScore(m_gameState->getScore());
 		cout << m_gameState->getScore() << endl;
 	}
 	/*else
 	{
 		chrom* GAPopulation = m_GA->GetPop();
 	}*/
+}
+
+void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPosY)
+{
+	chrom* GAPopulation = m_GA->GetPop();
+	for (int i = 0; i < POP_SIZE; i++)
+	{
+		for (int j = 0; j < CHROM_BITS; j++)
+		{
+			if (GAPopulation[i].bitPosX[j] == towerPosX && GAPopulation[i].bitPosY[j] == towerPosY)
+			{
+				GAPopulation[i].fit += increaseToScore;
+			}
+		}
+	}
 }
 
 void AIController::update()

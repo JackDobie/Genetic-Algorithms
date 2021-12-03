@@ -16,6 +16,7 @@
 #include "Tower.h"
 #include "Monster.h"
 class MonsterController;
+class GameBoard;
 
 using std::weak_ptr;
 using std::shared_ptr;
@@ -24,7 +25,7 @@ class TowerAndMonsterController {
 public:
 	TowerAndMonsterController(sf::RenderWindow* window, GameState* gameState,
 			MonsterController* MonsterController, vector<Tower*>* allTowers,
-			vector<shared_ptr<Monster>>* allMonster);
+			vector<shared_ptr<Monster>>* allMonster, GameBoard* board);
 	~TowerAndMonsterController();
 	//throwTower Object
 	void addThrowTowerToList(sf::Vector2f position, int index); //using string
@@ -60,6 +61,8 @@ private:
 	vector<weak_ptr<Monster>> allMonsterInRangeOfTowers;
 
 	bool collisionDetected(Tower*, weak_ptr<Monster>);
+
+	GameBoard* gameBoard;
 
 	//vector<unique_ptr<Tower>> allTSlamTowers;
 //vector<unique_ptr<Tower>> allSkipTowers;

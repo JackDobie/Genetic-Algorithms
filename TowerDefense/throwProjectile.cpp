@@ -24,6 +24,8 @@ throwProjectile::throwProjectile(int ind, int _damage,
 	}
 	projectileCenter = sf::Vector2f(towerPosition.x + 30.0f / 2,
 			towerPosition.y + 30.0f / 2);
+
+	towerPos = towerPosition;
 }
 
 throwProjectile::~throwProjectile() {

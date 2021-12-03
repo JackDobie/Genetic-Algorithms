@@ -43,7 +43,9 @@
     <ClCompile Include="AIController.cpp">
       <Filter>AI Code</Filter>
     </ClCompile>
-    <ClCompile Include="GA.cpp" />
+    <ClCompile Include="GA.cpp">
+      <Filter>Game Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clickable.h">
@@ -65,9 +67,6 @@
       <Filter>Game Headers</Filter>
     </ClInclude>
     <ClInclude Include="MonsterController.h">
-      <Filter>Game Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
       <Filter>Game Headers</Filter>
     </ClInclude>
     <ClInclude Include="throwProjectile.h">

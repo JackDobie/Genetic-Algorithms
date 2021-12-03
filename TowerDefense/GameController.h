@@ -8,12 +8,12 @@
 #include "GameState.h"
 #include "Tower.h"
 #include "TowerController.h"
-
+#include "AIController.h"
 
 // Game Controller keeps all Game State Variables Running and Updated
 class GameController {
 private:
-
+	
 public:
 	GameController();
 	
@@ -21,8 +21,6 @@ public:
 	void update();
 	void render();
 };
-
-
 
 // Game Board generates the map, and handles interactions
 // for any entities sitting on the map
@@ -35,6 +33,8 @@ private:
 	// Helper functions
 	bool gridSpaceAvailable(int gridX, int gridY);
 	bool towerIsPurchasable(TowerType type);
+
+	AIController* aIController = new AIController();
 
 public:
 	GameBoard(GameState* gameState, TowerController* towerController,
@@ -67,7 +67,5 @@ public:
 	sf::Font font;
 	sf::Event event;
 
-	
-
-	
+	AIController* GetAIController() { return aIController; }
 };

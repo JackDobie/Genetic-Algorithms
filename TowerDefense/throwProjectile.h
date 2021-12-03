@@ -31,6 +31,8 @@ public:
 	int getDamage();
 	sf::Vector2f getProjectileCenter();
 
+	sf::Vector2f getTowerPos() { return towerPos; }
+
 private:
 	int index;
 	int damage;
@@ -41,4 +43,6 @@ private:
 	float speed;
 	string throwProjImage = "assets/jacket.png";
 	weak_ptr<Monster> MonsterTarget;
+
+	sf::Vector2f towerPos;
 };

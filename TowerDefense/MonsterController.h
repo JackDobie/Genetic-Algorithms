@@ -49,7 +49,7 @@ public:
 	// Used by the attackController to deal damage. This function
 	// is responsible for updating the state of the Monster, as well
 	// as increasing the Tam value when a Monster is defeated
-	void dealDamage(shared_ptr<Monster> Monster, int damage);
+	bool dealDamage(shared_ptr<Monster> Monster, int damage);
 
 	void MonsterWave(int number, MonsterType type);
 	void waveOne();

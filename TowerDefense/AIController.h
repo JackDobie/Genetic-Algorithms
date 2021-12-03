@@ -32,6 +32,7 @@ public:
 	bool addTower(TowerInfo tower);
 	bool addTower(TowerType type, int gridx, int gridy);
 	void gameOver();
+	void addTowerScore(int increaseToScore, int towerPosX, int towerPosY);
 
 private:
 	GameController* m_gameController;

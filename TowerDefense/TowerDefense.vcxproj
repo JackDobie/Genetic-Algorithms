@@ -143,7 +143,6 @@
     <ClInclude Include="GameMenuController.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MenuButton.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="throwProjectile.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>

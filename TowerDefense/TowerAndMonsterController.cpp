@@ -2,6 +2,8 @@
 #include <math.h>
 #include <memory>
 #include "MonsterController.h"
+#include "AIController.h"
+#include "GameController.h"
 
 using std::weak_ptr;
 using std::shared_ptr;
@@ -10,9 +12,9 @@ TowerAndMonsterController::TowerAndMonsterController(sf::RenderWindow* window,
 	GameState* gameState,
 	::MonsterController* monsterController,
 	vector<Tower*>* allTowers,
-	vector<shared_ptr<Monster>>* allMonster) :
+	vector<shared_ptr<Monster>>* allMonster, GameBoard* board) :
 		window(window), gameState(gameState), MonsterController(
-			monsterController), allThrowTowers(allTowers), allMonster(allMonster) {
+			monsterController), allThrowTowers(allTowers), allMonster(allMonster), gameBoard(board) {
 }
 
 TowerAndMonsterController::~TowerAndMonsterController() {
@@ -70,8 +72,12 @@ void TowerAndMonsterController::updateProjectiles() { //this parameter will be r
 			if (allThrowObjects[i]->projectileMonsterCollision(
 					Monster->getCenterPosition())) {
 				//deal damage to Monster
-				MonsterController->dealDamage(Monster,
-						allThrowObjects[i]->getDamage());
+				if (MonsterController->dealDamage(Monster, allThrowObjects[i]->getDamage()))
+				{
+					sf::Vector2f pos = allThrowObjects[i]->getTowerPos();
+					gameBoard->GetAIController()->addTowerScore(1, pos.x, pos.y);
+					// the tower just killed an enemy, so give the tower pos to aicontroller and update the score
+				}
 				//delete throw object
 				deleteProjectile(allThrowObjects[i]);
 				i--;

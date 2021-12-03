@@ -141,13 +141,15 @@ void MonsterController::removeMonster(shared_ptr<Monster> targetMonster) {
 	}
 }
 
-void MonsterController::dealDamage(shared_ptr<Monster> Monster, int damage) {
+bool MonsterController::dealDamage(shared_ptr<Monster> Monster, int damage) {
 	if (Monster != nullptr && Monster->reduceHealth(damage) <= 0) {
 		gameState->updateTamBy(Monster->getTamValue());
 		gameState->monsterEliminated();
 		removeMonster(Monster);
 		updateMonster();
+		return true;
 	}
+	return false;
 }
 
 void MonsterController::update() {

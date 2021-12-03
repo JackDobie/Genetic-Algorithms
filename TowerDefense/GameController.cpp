@@ -15,7 +15,6 @@
 #include "Tower.h"
 #include "GameState.h"
 #include "Timer.h"
-#include "AIController.h"
 
 using sf::Vector2f;
 using std::cout;
@@ -342,7 +341,7 @@ void resetGame(Timer** clk, GameState** gameState, GameMenuController** gameMenu
 
 	*attackController = new TowerAndMonsterController(
 		window, *gameState, *monsterController, (*towerController)->getTowerVec(),
-		(*monsterController)->getMonsterVec());
+		(*monsterController)->getMonsterVec(), *gameBoard);
 }
 
 // Main
@@ -353,8 +352,6 @@ int main() {
 	window->setFramerateLimit(60);
 	//window->setFramerateLimit(0);
 	//window->setVerticalSyncEnabled(false);
-
-	AIController aIController;
 	
 	Timer* clk;
 	GameState* gameState;
@@ -365,10 +362,11 @@ int main() {
 	TowerAndMonsterController* attackController;
 	resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window);
 	//m_AIController.setGameController()
-	aIController.setGameBoard(gameBoard);
-	aIController.setTimer(clk);
-	aIController.setGameState(gameState);
-	aIController.setupBoard();
+	
+	gameBoard->GetAIController()->setGameBoard(gameBoard);
+	gameBoard->GetAIController()->setTimer(clk);
+	gameBoard->GetAIController()->setGameState(gameState);
+	gameBoard->GetAIController()->setupBoard();
 
 	gameMenuController->setDebug(debug);
 // Main game loop
@@ -418,7 +416,7 @@ int main() {
 		gameMenuController->render();
 		attackController->render();
 
-		aIController.update();
+		gameBoard->GetAIController()->update();
 
 		gameBoard->renderLabels(window);
 		if (debug) {
@@ -430,14 +428,14 @@ int main() {
 
 		if (gameState->getHealth() <= 0) {
 			clk->stop();
-			aIController.gameOver();
+			gameBoard->GetAIController()->gameOver();
 			//deathLoop(window, gameBoard->event);
 			cleanGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController);
 			resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window);
-			aIController.setGameBoard(gameBoard);
-			aIController.setTimer(clk);
-			aIController.setGameState(gameState);
-			aIController.setupBoard();
+			gameBoard->GetAIController()->setGameBoard(gameBoard);
+			gameBoard->GetAIController()->setTimer(clk);
+			gameBoard->GetAIController()->setGameState(gameState);
+			gameBoard->GetAIController()->setupBoard();
 			//return 0;
 		}
 		window->display();

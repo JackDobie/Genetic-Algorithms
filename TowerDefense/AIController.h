@@ -8,6 +8,13 @@ class Timer;
 class GameState;
 class GA;
 
+struct TowerInfo
+{
+	TowerType type;
+	int xPos;
+	int yPos;
+};
+
 class AIController
 {
 public:
@@ -22,7 +29,8 @@ public:
 	void setTimer(Timer* timer) { m_Timer = timer; }
 	void setGameState(GameState* gameState) { m_gameState = gameState; }
 	void update();
-	void addTower(TowerType type, int gridx, int gridy);
+	bool addTower(TowerInfo tower);
+	bool addTower(TowerType type, int gridx, int gridy);
 	void gameOver();
 
 private:
@@ -33,5 +41,6 @@ private:
 	GA*				m_GA;
 	int				GA_iteration;
 	const int		GA_maxIteration = 10;
-};
 
+	vector<TowerInfo> TowersToAdd = vector<TowerInfo>();
+};

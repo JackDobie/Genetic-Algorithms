@@ -55,15 +55,18 @@ void AIController::update()
 
 	//GAManager::Instance()->Update(m_Timer->elapsedSeconds());
 
-	/*if (GA_iteration < GA_maxIteration)
+	if (!TowersToAdd.empty()) // if haven't placed all GA towers
 	{
-		m_GA->Update();
-		GA_iteration++;
+		for (int i = 0; i < TowersToAdd.size(); i++)
+		{
+			if (addTower(TowersToAdd[i])) // if the tower was successfully added, remove from vector
+			{
+				cout << "Add tower: " << (int)TowersToAdd[i].type << ", X: " << TowersToAdd[i].xPos << ", Y: " << TowersToAdd[i].yPos << endl;
+				swap(TowersToAdd[i], TowersToAdd.back());
+				TowersToAdd.pop_back();
+			}
+		}
 	}
-	else
-	{
-		chrom* GAPopulation = m_GA->GetPop();
-	}*/
 
 	// this might be useful? Monsters killed
 	static int monstersKilled = 0;
@@ -76,7 +79,12 @@ void AIController::update()
 	recordScore();
 }
 
-void AIController::addTower(TowerType type, int gridx, int gridy)
+bool AIController::addTower(TowerInfo tower)
+{
+	return m_gameBoard->addTower(tower.type, tower.xPos, tower.yPos);
+}
+
+bool AIController::addTower(TowerType type, int gridx, int gridy)
 {
 	// grid position can be from 0,0 to 25,17
 	/*
@@ -85,7 +93,7 @@ void AIController::addTower(TowerType type, int gridx, int gridy)
 	*/
 
 	bool towerAdded = m_gameBoard->addTower(type, gridx, gridy);
-
+	return towerAdded;
 	// NOTE towerAdded might be false if the tower can't be placed in that position, is there isn't enough funds
 }
 
@@ -100,11 +108,23 @@ void AIController::setupBoard()
 	{
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
-			TowerType t = (TowerType)GAPopulation[i].bit[j];
+			/*TowerType t = (TowerType)GAPopulation[i].bit[j];
 			int xPos = GAPopulation[i].bitPosX[j];
-			int yPos = GAPopulation[i].bitPosY[j];
-			addTower(t, xPos, yPos);
-			cout << "Add tower: " << (int)t << ", X: " << xPos << ", Y: " << yPos << endl;
+			int yPos = GAPopulation[i].bitPosY[j];*/
+			TowerInfo t;
+			t.type = (TowerType)GAPopulation[i].bit[j];
+			t.xPos = GAPopulation[i].bitPosX[j];
+			t.yPos = GAPopulation[i].bitPosY[j];
+
+			if (addTower(t))
+			{
+				cout << "Add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
+			}
+			else
+			{
+				cout << "Unable to add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
+				TowersToAdd.push_back(t);
+			}
 		}
 	}
 }

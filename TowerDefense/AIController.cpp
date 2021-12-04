@@ -28,7 +28,8 @@ AIController::~AIController()
 void AIController::gameOver()
 {
 	//m_GA->SetCurrentScore(m_gameState->getScore());
-	cout << "Score: " << m_gameState->getScore() << endl;
+	cout << "Score: " << score << endl;
+	score = 0;
 	towersToAdd.clear();
 }
 
@@ -45,11 +46,11 @@ void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPo
 		{
 			if (GAPopulation[i].bitPosX[j] == boardPosX)
 			{
-				cout << "Y: " << GAPopulation[i].bitPosY[j] << " " << boardPosY << endl;
 				if (GAPopulation[i].bitPosY[j] == boardPosY)
 				{
 					GAPopulation[i].fit += increaseToScore;
-					cout << "Score increased by " << increaseToScore << " for tower at X: " << towerPosX << ", Y: " << towerPosY << endl;
+					score += increaseToScore;
+					break;
 				}
 			}
 		}
@@ -79,7 +80,7 @@ void AIController::update()
 		{
 			if (addTower(towersToAdd[i])) // if the tower was successfully added, remove from vector
 			{
-				cout << "Add tower: " << (int)towersToAdd[i].type << ", X: " << towersToAdd[i].xPos << ", Y: " << towersToAdd[i].yPos << endl;
+				//cout << "Add tower: " << (int)towersToAdd[i].type << ", X: " << towersToAdd[i].xPos << ", Y: " << towersToAdd[i].yPos << endl;
 				swap(towersToAdd[i], towersToAdd.back());
 				towersToAdd.pop_back();
 			}
@@ -136,11 +137,11 @@ void AIController::setupBoard()
 
 			if (addTower(t))
 			{
-				cout << "Add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
+				//cout << "Add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
 			}
 			else
 			{
-				cout << "Unable to add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
+				//cout << "Unable to add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
 				towersToAdd.push_back(t);
 			}
 		}

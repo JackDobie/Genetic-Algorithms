@@ -18,14 +18,14 @@ const int FPS = 30;
 
 GameState::GameState(Timer* timer) :
 		timer(timer) {
-	towerProps[TowerType::slammer] = { {"tam", 30}, {"damage", 15}, {"range", 200}, {"cooldown", (int)(1.5*FPS)}};
-	towerProps[TowerType::swinger] = { {"tam", 50}, {"damage", 50}, {"range", 125}, {"cooldown", (int)(3*FPS) }};
-	towerProps[TowerType::thrower] = { {"tam", 40}, {"damage", 10}, {"range", 300}, {"cooldown", (int)(1.25*FPS) }};
+	towerProps[TowerType::slammer] = { {"tam", 30}, {"damage", 15}, {"range", 200}, {"cooldown", (int)((1.5*FPS)*inverseGameSpeed)}};
+	towerProps[TowerType::swinger] = { {"tam", 50}, {"damage", 50}, {"range", 125}, {"cooldown", (int)((3*FPS)*inverseGameSpeed)}};
+	towerProps[TowerType::thrower] = { {"tam", 40}, {"damage", 10}, {"range", 300}, {"cooldown", (int)((1.25*FPS)*inverseGameSpeed)}};
 
 
-	MonsterProps[MonsterType::slow] = { {"tam", 1}, {"health", 60}, {"damage", 3}, {"speed", 3}};
-	MonsterProps[MonsterType::regular] = { {"tam", 2}, {"health", 30}, {"damage", 2}, {"speed", 4}};
-	MonsterProps[MonsterType::fast] = { {"tam", 3}, {"health", 15}, {"damage", 1}, {"speed", 5}};
+	MonsterProps[MonsterType::slow] = { {"tam", 1}, {"health", 60}, {"damage", 3}, {"speed", (3 * gameSpeed)}};
+	MonsterProps[MonsterType::regular] = { {"tam", 2}, {"health", 30}, {"damage", 2}, {"speed", (4 * gameSpeed)}};
+	MonsterProps[MonsterType::fast] = { {"tam", 3}, {"health", 15}, {"damage", 1}, {"speed", (5 * gameSpeed)}};
 	helperState = false;
 }
 

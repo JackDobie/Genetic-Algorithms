@@ -43,7 +43,7 @@ void GA::evpop(chrom popcurrent[POP_SIZE])
 	{
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
-			random = rand() % towerBit::thrower;
+			random = (rand() % towerBit::thrower) + 1;
 			popcurrent[i].bit[j] = random;
 			random = rand() % BOARD_WIDTH;
 			popcurrent[i].bitPosX[j] = random;
@@ -130,7 +130,7 @@ void GA::Mutation(chrom popnext[POP_SIZE])
 		int col = rand() % CHROM_BITS;
 		int row = rand() % POP_SIZE;
 
-		popnext[row].bit[col] = rand() % towerBit::thrower;
+		popnext[row].bit[col] = (rand() % towerBit::thrower) + 1;
 
 		//if (popnext[row].bit[col] == 0) // invert the bit
 		//{

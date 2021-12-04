@@ -80,19 +80,20 @@ void MonsterController::MonsterWave(int number, MonsterType type) {
 }
 
 void MonsterController::waveOne() {
+	float multiplier = gameState->GetInverseSpeed();
 
 	//cout << "wave one" << endl;
-	if (counter == 50 || counter == 150 || counter == 300) {
+	if (counter == 50 * multiplier || counter == 150 * multiplier || counter == 300 * multiplier) {
 		MonsterWave(3, MonsterType::slow);
 	}
-	if (counter == 100 || counter == 250 || counter == 350
-		|| counter == 450 || counter == 500) {
+	if (counter == 100 * multiplier || counter == 250 * multiplier || counter == 350 * multiplier
+		|| counter == 450 * multiplier || counter == 500 * multiplier) {
 		MonsterWave(3, MonsterType::regular);
 	}
-	if (counter == 200 || counter == 400 || counter == 550) {
+	if (counter == 200 * multiplier || counter == 400 * multiplier || counter == 550 * multiplier) {
 		MonsterWave(3, MonsterType::fast);
 	}
-	if (counter == 1000) {
+	if (counter == 1000 * multiplier) {
 		counter = 0;
 		this->modifier *= 1.1f;
 		wave = 2;
@@ -101,20 +102,22 @@ void MonsterController::waveOne() {
 }
 
 void MonsterController::waveTwo() {
+	float multiplier = gameState->GetInverseSpeed();
+
 	//cout << "wave two" << endl;
-	if (counter == 50 || counter == 150 || counter == 300
-		|| counter == 175) {
+	if (counter == 50 * multiplier || counter == 150 * multiplier || counter == 300 * multiplier
+		|| counter == 175 * multiplier) {
 		MonsterWave(3, MonsterType::slow);
 	}
-	if (counter == 100 || counter == 250 || counter == 350
-		|| counter == 475) {
+	if (counter == 100 * multiplier || counter == 250 * multiplier || counter == 350 * multiplier
+		|| counter == 475 * multiplier) {
 		MonsterWave(3, MonsterType::regular);
 	}
-	if (counter == 200 || counter == 400 || counter == 550
-		|| counter == 450 || counter == 500 || counter == 75) {
+	if (counter == 200 * multiplier || counter == 400 * multiplier || counter == 550 * multiplier
+		|| counter == 450 * multiplier || counter == 500 * multiplier || counter == 75 * multiplier) {
 		MonsterWave(3, MonsterType::fast);
 	}
-	if (counter == 900) {
+	if (counter == 900 * multiplier) {
 		counter = 0;
 		modifier *= 1.2f;
 		gameState->setCurrentWave(gameState->getCurrentWave() + 1);

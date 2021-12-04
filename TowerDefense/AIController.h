@@ -44,4 +44,6 @@ private:
 	const int		GA_maxIteration = 10;
 
 	vector<TowerInfo> towersToAdd = vector<TowerInfo>();
+
+	int score = 0;
 };

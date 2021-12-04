@@ -34,6 +34,9 @@ private:
 	// This is used by the upgrade button
 	Tower* boardTower = nullptr;
 
+	const float gameSpeed = 10.0f;
+	float inverseGameSpeed = 1 / gameSpeed;
+
 public:
 	GameState(Timer* timer);
 	virtual ~GameState();
@@ -72,6 +75,8 @@ public:
 
 	void monsterEliminated() { MonsterEliminated++; }
 
+	float GetGameSpeed() { return gameSpeed; }
+	float GetInverseSpeed() { return inverseGameSpeed; }
 };
 
 #endif /* GAMESTATE_H_ */

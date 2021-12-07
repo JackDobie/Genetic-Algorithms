@@ -76,7 +76,7 @@ void GA::evpop(chrom popcurrent[POP_SIZE])
 void GA::PickChroms(chrom popcurrent[POP_SIZE])
 {
 	chrom temp;
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < (POP_SIZE - 1); i++)
 	{
 		if (popcurrent[i + 1].fit > popcurrent[i].fit)
 		{
@@ -97,16 +97,33 @@ void GA::PickChroms(chrom popcurrent[POP_SIZE])
 void GA::Crossover(chrom popnext[POP_SIZE])
 {
 	int random = (rand() % POP_SIZE) + 1;
+
+	int midpoint = POP_SIZE / 2;
+	chrom firsthalf[POP_SIZE / 2];
+	chrom secondhalf[POP_SIZE / 2];
+	for (int i = 0; i < POP_SIZE; i++)
+	{
+		if (i < midpoint)
+		{
+			firsthalf[i] = popnext[i];
+		}
+		else
+		{
+			int index = i % midpoint;
+			secondhalf[index] = popnext[i];
+		}
+	}
+
 	for (int i = 0; i < random; i++)
 	{
-		popnext[2].bit[i] = popnext[0].bit[i];
-		popnext[3].bit[i] = popnext[1].bit[i];
+		secondhalf[0].bit[i] = firsthalf[0].bit[i];
+		secondhalf[1].bit[i] = firsthalf[1].bit[i];
 	}
 
 	for (int i = random; i < CHROM_BITS; i++)
 	{
-		popnext[2].bit[i] = popnext[1].bit[i];
-		popnext[3].bit[i] = popnext[0].bit[i];
+		secondhalf[0].bit[i] = firsthalf[1].bit[i];
+		secondhalf[1].bit[i] = firsthalf[0].bit[i];
 	}
 
 	/*for (int i = 0; i < POP_SIZE; i++)
@@ -114,11 +131,11 @@ void GA::Crossover(chrom popnext[POP_SIZE])
 		popnext[i].fit = y(x(popnext[i]));
 	}*/
 
-	for (int i = 0; i < POP_SIZE; i++)
-	{
+	//for (int i = 0; i < POP_SIZE; i++)
+	//{
 		//std::cout << "popcurrent[" << i << "] "/*Value: " << x(popnext[i])*/ << ", Fitness = " << popcurrent[i].fit;
 		//printf("\nCrossOver popnext[%d]=%d%d%d%d%d%d    value=%d    fitness = %d", i, popnext[i].bit[5], popnext[i].bit[4], popnext[i].bit[3], popnext[i].bit[2], popnext[i].bit[1], popnext[i].bit[0], x(popnext[i]), popnext[i].fit);
-	}
+	//}
 }
 
 void GA::Mutation(chrom popnext[POP_SIZE])

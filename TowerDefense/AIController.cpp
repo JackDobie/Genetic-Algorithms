@@ -31,6 +31,8 @@ void AIController::gameOver()
 	cout << "Score: " << score << endl;
 	score = 0;
 	towersToAdd.clear();
+	m_GA->Update();
+	GA_iteration++;
 }
 
 void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPosY)
@@ -120,8 +122,6 @@ void AIController::setupBoard()
 {
 	m_Timer->start();
 
-	m_GA->Update();
-	GA_iteration++;
 	chrom* GAPopulation = m_GA->GetPop();
 	for (int i = 0; i < POP_SIZE; i++)
 	{

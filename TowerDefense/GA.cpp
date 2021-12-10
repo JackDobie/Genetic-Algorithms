@@ -83,14 +83,15 @@ void GA::PickChroms(chrom popcurrent[POP_SIZE])
 			temp = popcurrent[i + 1];
 			popcurrent[i + 1] = popcurrent[i];
 			popcurrent[i] = temp;
+			std::cout << "new chroms picked" << std::endl;
 		}
 	}
 
-	for (int i = 0; i < POP_SIZE; i++)
-	{
+	//for (int i = 0; i < POP_SIZE; i++)
+	//{
 		//std::cout << "\nSorting: popnext[" << i << "] fitness=" << popcurrent[i].fit;
 		//printf("\nSorting:popnext[%d] fitness=%d", i, popcurrent[i].fit); // print the result
-	}
+	//}
 	//std::cout << std::endl;
 }
 
@@ -126,6 +127,19 @@ void GA::Crossover(chrom popnext[POP_SIZE])
 		secondhalf[1].bit[i] = firsthalf[0].bit[i];
 	}
 
+	for (int i = 0; i < POP_SIZE; i++)
+	{
+		if (i < midpoint)
+		{
+			popnext[i] = firsthalf[i];
+		}
+		else
+		{
+			int index = i % midpoint;
+			popnext[i] = secondhalf[midpoint + index];
+		}
+	}
+
 	/*for (int i = 0; i < POP_SIZE; i++)
 	{
 		popnext[i].fit = y(x(popnext[i]));
@@ -140,14 +154,16 @@ void GA::Crossover(chrom popnext[POP_SIZE])
 
 void GA::Mutation(chrom popnext[POP_SIZE])
 {
-	int random = rand() % 50;
+	int random = rand() % 20;
 
-	if (random == 25)
+	if (random == 10)
 	{
 		int col = rand() % CHROM_BITS;
 		int row = rand() % POP_SIZE;
 
 		popnext[row].bit[col] = (rand() % towerBit::thrower) + 1;
+
+		std::cout << "mutation!" << std::endl;
 
 		//if (popnext[row].bit[col] == 0) // invert the bit
 		//{

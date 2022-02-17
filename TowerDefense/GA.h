@@ -54,7 +54,7 @@ private:
 	chrom popcurrent[POP_SIZE];
 	chrom popnext[POP_SIZE];
 
-	int currentIndex = -1;
+	int currentIndex = 0;
 
 	// mutating will be true when checking fitness of mutation. needed to avoid checking all chroms.
 	bool mutating = false;

@@ -322,7 +322,7 @@ void cleanGame(Timer** clk, GameState** gameState, GameMenuController** gameMenu
 	delete *gameMenuController; *gameMenuController = nullptr;
 	delete *towerController; *towerController = nullptr;
 	delete *monsterController; *monsterController = nullptr;
-	delete *gameBoard; *gameBoard = nullptr;
+	//delete *gameBoard; *gameBoard = nullptr;
 
 	delete *attackController; *attackController = nullptr;
 }
@@ -337,7 +337,19 @@ void resetGame(Timer** clk, GameState** gameState, GameMenuController** gameMenu
 	*towerController = new TowerController(window, *gameState);
 	*monsterController = new MonsterController(window, *gameState,
 		path);
-	*gameBoard = new GameBoard(*gameState, *towerController, (int)(*gameMenuController)->getMenuPos().x);
+
+	if (*gameBoard != nullptr)
+	{
+		GameBoard board = **gameBoard;
+		AIController* aiController = board.GetAIController();
+		*gameBoard = new GameBoard(*gameState, *towerController, (int)(*gameMenuController)->getMenuPos().x);
+		GameBoard* pBoard = *gameBoard;
+		pBoard->SetAIController(aiController);
+	}
+	else
+	{
+		*gameBoard = new GameBoard(*gameState, *towerController, (int)(*gameMenuController)->getMenuPos().x);
+	}
 
 	*attackController = new TowerAndMonsterController(
 		window, *gameState, *monsterController, (*towerController)->getTowerVec(),
@@ -358,7 +370,7 @@ int main() {
 	GameMenuController* gameMenuController;
 	TowerController* towerController;
 	MonsterController* monsterController;
-	GameBoard* gameBoard;
+	GameBoard* gameBoard = nullptr;
 	TowerAndMonsterController* attackController;
 	resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window);
 	//m_AIController.setGameController()

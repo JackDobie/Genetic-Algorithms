@@ -68,4 +68,5 @@ public:
 	sf::Event event;
 
 	AIController* GetAIController() { return aIController; }
+	void SetAIController(AIController* newAIController) { aIController = newAIController; }
 };

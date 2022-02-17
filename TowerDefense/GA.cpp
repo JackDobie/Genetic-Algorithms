@@ -76,13 +76,13 @@ void GA::evpop()
 void GA::PickChroms()
 {
 	chrom temp;
-	for (int i = 0; i < POP_SIZE; i++)
+	for (int i = 0; i < POP_SIZE - 1; i++)
 	{
-		if (popcurrent[i + 1].fit > popcurrent[i].fit)
+		if (popnext[i + 1].fit > popnext[i].fit)
 		{
-			temp = popcurrent[i + 1];
-			popcurrent[i + 1] = popcurrent[i];
-			popcurrent[i] = temp;
+			temp = popnext[i + 1];
+			popnext[i + 1] = popnext[i];
+			popnext[i] = temp;
 			std::cout << "new chroms picked" << std::endl;
 		}
 	}
@@ -160,7 +160,7 @@ void GA::Crossover()
 
 void GA::Mutation()
 {
-	int random = rand() % 20;
+	int random = rand() % 50;
 
 	if (random == 10)
 	{

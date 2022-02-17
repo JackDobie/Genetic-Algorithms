@@ -29,7 +29,7 @@ struct chrom
 	int fit;
 };
 
-const int midpoint = CHROM_BITS > 1 ? CHROM_BITS / 2 : CHROM_BITS;
+//const int midpoint = CHROM_BITS > 1 ? CHROM_BITS / 2 : CHROM_BITS;
 class GA
 {
 public:
@@ -37,9 +37,12 @@ public:
 	~GA();
 	void Update();
 
-	chrom* GetPop() { return popcurrent; }
+	chrom* GetPopCurrent() { return popcurrent; }
+	chrom* GetPopNext() { return popnext; }
 
 	void SetCurrentScore(int score);
+
+	int GetCurrentIndex() { return currentIndex; }
 private:
 	void evpop();
 	//int x(chrom popcurrent);
@@ -48,8 +51,11 @@ private:
 	void Crossover();
 	void Mutation();
 
-	chrom* popcurrent;
+	chrom popcurrent[POP_SIZE];
 	chrom popnext[POP_SIZE];
 
-	int currentIndex = 0;
+	int currentIndex = -1;
+
+	// mutating will be true when checking fitness of mutation. needed to avoid checking all chroms.
+	bool mutating = false;
 };

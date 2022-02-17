@@ -11,21 +11,36 @@ GA::~GA()
 
 void GA::Update()
 {
-	//for (int i = 0; i < POP_SIZE; i++)
-	//{
-	//	popnext[i] = popcurrent;
-	//}
+	// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
+	if (currentIndex != -1)
+	{
+		if (mutating)
+		{
+			mutating = false;
+			currentIndex = -1;
+		}
+		else if (++currentIndex > POP_SIZE)
+		{
+			Mutation();
+		}
+	}
+	
+	if (currentIndex == -1)
+	{
+		for (int i = 0; i < POP_SIZE; i++)
+		{
+			popnext[i] = popcurrent[i];
+		}
 
-	PickChroms();
-	Crossover();
-	Mutation();
+		PickChroms();
+		Crossover();
+		//Mutation();
 
-	popcurrent = &popnext[currentIndex];
-
-	//for (int i = 0; i < POP_SIZE; i++)
-	//{
-	//	popcurrent[i] = popnext[i];
-	//}
+		for (int i = 0; i < POP_SIZE; i++)
+		{
+			popcurrent[i] = popnext[i];
+		}
+	}
 }
 
 void GA::SetCurrentScore(int score)
@@ -43,11 +58,11 @@ void GA::evpop()
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
 			random = (rand() % towerBit::thrower) + 1;
-			popnext[i].bit[j] = random;
+			popcurrent[i].bit[j] = random;
 			random = rand() % BOARD_WIDTH;
-			popnext[i].bitPosX[j] = random;
+			popcurrent[i].bitPosX[j] = random;
 			random = rand() % BOARD_HEIGHT;
-			popnext[i].bitPosY[j] = random;
+			popcurrent[i].bitPosY[j] = random;
 		}
 		//value = x(popcurrent[i]);
 		//popcurrent[i].fit = y(x(popcurrent[i]));
@@ -75,16 +90,17 @@ void GA::evpop()
 void GA::PickChroms()
 {
 	chrom temp;
-	for (int i = 0; i < POP_SIZE - 1; i++)
+	for (int i = 0; i <= (POP_SIZE / 2); i++)
 	{
-		if (popnext[i].fit > popcurrent->fit)
+		for (int j = 0; j <= (POP_SIZE / 2); j++)
 		{
-			std::cout << "new chroms picked: " << popnext[i + 1].fit - popnext[i].fit << std::endl;
-			currentIndex = i;
-			popcurrent = &popnext[i];
-			/*temp = popnext[i + 1];
-			popnext[i + 1] = popnext[i];
-			popnext[i] = temp;*/
+			if (popcurrent[i + 1].fit > popcurrent[i].fit)
+			{
+				std::cout << "new chroms picked: " << popcurrent[i + 1].fit - popcurrent[i].fit << std::endl;
+				temp = popcurrent[i + 1];
+				popcurrent[i + 1] = popcurrent[i];
+				popcurrent[i] = temp;
+			}
 		}
 	}
 
@@ -100,52 +116,64 @@ void GA::Crossover()
 {
 	if (POP_SIZE > 1)
 	{
-		// int random = (rand() % CHROM_BITS) + 1;
+		int random = (rand() % CHROM_BITS) + 1;
 
-		chrom pops[POP_SIZE];
-		for (int i = 0; i < POP_SIZE; i++)
+		for (int i = 0; i < random; i++) // crossing bits below the cross point
 		{
-			pops[i] = popnext[i];
+			popnext[2].bit[i] = popnext[0].bit[i];
+			popnext[3].bit[i] = popnext[1].bit[i];
 		}
-
-		// cross over bits
-		for (int i = 0; i < POP_SIZE; i += 2)
+		for (int i = random; i < CHROM_BITS; i++) // crossing bits above the cross point
 		{
-			/*std::cout << i << std::endl;
-			for (int i = 0; i < POP_SIZE; i++)
-			{
-				for (int j = 0; j < CHROM_BITS; j++)
-				{
-					std::cout << popnext[i].bit[j];
-				}
-				std::cout << std::endl;
-			}*/
-
-			for (int j = 0; j < CHROM_BITS; j++)
-			{
-				if (j >= midpoint)
-				{
-					short tempBit = pops[i].bit[j];
-					pops[i].bit[j] = pops[i + 1].bit[j];
-					pops[i + 1].bit[j] = tempBit;
-				}
-			}
-
-			/*std::cout << std::endl;
-			for (int i = 0; i < POP_SIZE; i++)
-			{
-				for (int j = 0; j < CHROM_BITS; j++)
-				{
-					std::cout << pops[i].bit[j];
-				}
-				std::cout << std::endl;
-			}*/
+			popnext[2].bit[i] = popnext[1].bit[i];
+			popnext[3].bit[i] = popnext[0].bit[i];
 		}
+		currentIndex = 0;
 
-		for (int i = 0; i < POP_SIZE; i++)
-		{
-			popnext[i] = pops[i];
-		}
+		//chrom pops[POP_SIZE];
+		//for (int i = 0; i < POP_SIZE; i++)
+		//{
+		//	pops[i] = popnext[i];
+		//}
+
+		//// cross over bits
+		//for (int i = 0; i < POP_SIZE; i += 2)
+		//{
+		//	/*std::cout << i << std::endl;
+		//	for (int i = 0; i < POP_SIZE; i++)
+		//	{
+		//		for (int j = 0; j < CHROM_BITS; j++)
+		//		{
+		//			std::cout << popnext[i].bit[j];
+		//		}
+		//		std::cout << std::endl;
+		//	}*/
+
+		//	for (int j = 0; j < CHROM_BITS; j++)
+		//	{
+		//		if (j >= midpoint)
+		//		{
+		//			short tempBit = pops[i].bit[j];
+		//			pops[i].bit[j] = pops[i + 1].bit[j];
+		//			pops[i + 1].bit[j] = tempBit;
+		//		}
+		//	}
+
+		//	/*std::cout << std::endl;
+		//	for (int i = 0; i < POP_SIZE; i++)
+		//	{
+		//		for (int j = 0; j < CHROM_BITS; j++)
+		//		{
+		//			std::cout << pops[i].bit[j];
+		//		}
+		//		std::cout << std::endl;
+		//	}*/
+		//}
+
+		//for (int i = 0; i < POP_SIZE; i++)
+		//{
+		//	popnext[i] = pops[i];
+		//}
 	}
 }
 
@@ -172,6 +200,10 @@ void GA::Mutation()
 		std::cout << std::endl;
 		//std::cout << "mutation!" << std::endl;
 		currentIndex = chromIndex;
-		popcurrent = &popnext[chromIndex];
+		mutating = true;
+	}
+	else
+	{
+		currentIndex = -1;
 	}
 }

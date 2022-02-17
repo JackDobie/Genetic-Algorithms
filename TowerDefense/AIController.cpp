@@ -33,7 +33,7 @@ void AIController::gameOver()
 	cout << "Chrom: ";
 	for (int i = 0; i < CHROM_BITS; i++)
 	{
-		cout << m_GA->GetPop()->bit[i] << " ";
+		cout << m_GA->GetPopNext()[m_GA->GetCurrentIndex()].bit[i] << " ";
 	}
 	cout << endl;
 	// output score
@@ -52,7 +52,7 @@ void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPo
 	int boardPosX = towerPosX / 60;
 	int boardPosY = towerPosY / 60;
 
-	chrom GAPopulation = *m_GA->GetPop();
+	chrom GAPopulation = m_GA->GetPopNext()[m_GA->GetCurrentIndex()];
 	for (int i = 0; i < CHROM_BITS; i++)
 	{
 		if (GAPopulation.bitPosX[i] == boardPosX)
@@ -130,7 +130,7 @@ void AIController::setupBoard()
 {
 	m_Timer->start();
 
-	chrom GAPopulation = *m_GA->GetPop();
+	chrom GAPopulation = m_GA->GetPopNext()[m_GA->GetCurrentIndex()];
 	for (int i = 0; i < CHROM_BITS; i++)
 	{
 		/*TowerType t = (TowerType)GAPopulation[i].bit[j];

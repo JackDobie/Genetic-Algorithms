@@ -14,6 +14,7 @@ void GA::Update()
 	// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
 	if (currentIndex != -1)
 	{
+		std::cout << currentIndex << std::endl;
 		if (mutating)
 		{
 			mutating = false;
@@ -205,5 +206,6 @@ void GA::Mutation()
 	else
 	{
 		currentIndex = -1;
+		Update();
 	}
 }

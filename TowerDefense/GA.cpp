@@ -99,61 +99,71 @@ void GA::Crossover()
 {
 	if (POP_SIZE > 1)
 	{
-		int random = (rand() % POP_SIZE) + 1;
+		//int random = (rand() % POP_SIZE) + 1;
 
 		// split popnext into two halfs by looping through and comparing index to half of pop size
 		//int midpoint = POP_SIZE / 2;
-		chrom firsthalf[midpoint];
-		chrom secondhalf[midpoint];
+		//chrom firsthalf[midpoint];
+		chrom pops[POP_SIZE];
 		for (int i = 0; i < POP_SIZE; i++)
 		{
-			if (i < midpoint)
+			pops[i] = popnext[i];
+			/*for (int j = 0; j < CHROM_BITS; j++)
 			{
-				firsthalf[i] = popnext[i];
-			}
-			else
-			{
-				int index = i % midpoint;
-				secondhalf[index] = popnext[i];
-			}
+				if (j > midpoint)
+				{
+					int index = j % midpoint;
+					secondhalf[i] = popnext[j];
+				}
+			}*/
 		}
 
 		// cross over bits
 
-		for (int i = 0; i < random; i++)
-		{
-			for (int j = 0; j < midpoint; j++)
-			{
-				secondhalf[j].bit[i] = firsthalf[j].bit[i];
-			}
-			//secondhalf[0].bit[i] = firsthalf[0].bit[i];
-			//secondhalf[1].bit[i] = firsthalf[1].bit[i];
-		}
+		//for (int i = 0; i < random; i++)
+		//{
+		//	for (int j = 0; j < midpoint; j++)
+		//	{
+		//		secondhalf[j].bit[i] = firsthalf[j].bit[i];
+		//	}
+		//	//secondhalf[0].bit[i] = firsthalf[0].bit[i];
+		//	//secondhalf[1].bit[i] = firsthalf[1].bit[i];
+		//}
 
-		for (int i = random; i < CHROM_BITS; i++)
+		// loops through secondhalf
+		for (int i = 0; i < POP_SIZE; i += 2)
 		{
-			for (int j = 0; j < midpoint; j++)
+			short tempBits[CHROM_BITS];
+			for (int j = 0; j < CHROM_BITS; j++)
 			{
-				for (int k = midpoint - 1; k >= 0; k--)
+				if (j > midpoint)
 				{
-					secondhalf[j].bit[i] = firsthalf[k].bit[i];
+					tempBits[j] = pops[i].bit[j];
+					pops[i].bit[j] == pops[i + 1].bit[j];
+					pops[i + 1].bit[j] = tempBits[j];
 				}
 			}
-			//secondhalf[0].bit[i] = firsthalf[1].bit[i];
-			//secondhalf[1].bit[i] = firsthalf[0].bit[i];
+			//
+			//for (int j = 0; j < POP_SIZE; j += 2)
+			//{
+			//	secondhalf[i].bit
+			//	//= firsthalf[j].bit[i];
+			//	//secondhalf[j].bit[i] = firsthalf[j].bit[i];
+			//}
 		}
 
 		for (int i = 0; i < POP_SIZE; i++)
 		{
-			if (i < midpoint)
-			{
-				popnext[i] = firsthalf[i];
-			}
-			else
-			{
-				int index = i % midpoint;
-				popnext[i] = secondhalf[midpoint + index];
-			}
+			//if (i < midpoint)
+			//{
+			//	popnext[i] = firsthalf[i];
+			//}
+			//else
+			//{
+			//	int index = i % midpoint;
+			//	popnext[i] = secondhalf[midpoint + index];
+			//}
+			popnext[i] = pops[i];
 		}
 	}
 }

@@ -52,19 +52,16 @@ void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPo
 	int boardPosX = towerPosX / 60;
 	int boardPosY = towerPosY / 60;
 
-	chrom* GAPopulation = m_GA->GetPop();
-	for (int i = 0; i < POP_SIZE; i++)
+	chrom GAPopulation = *m_GA->GetPop();
+	for (int i = 0; i < CHROM_BITS; i++)
 	{
-		for (int j = 0; j < CHROM_BITS; j++)
+		if (GAPopulation.bitPosX[i] == boardPosX)
 		{
-			if (GAPopulation[i].bitPosX[j] == boardPosX)
+			if (GAPopulation.bitPosY[i] == boardPosY)
 			{
-				if (GAPopulation[i].bitPosY[j] == boardPosY)
-				{
-					GAPopulation[i].fit += increaseToScore;
-					//score += increaseToScore;
-					break;
-				}
+				GAPopulation.fit += increaseToScore;
+				//score += increaseToScore;
+				break;
 			}
 		}
 	}
@@ -133,28 +130,25 @@ void AIController::setupBoard()
 {
 	m_Timer->start();
 
-	chrom* GAPopulation = m_GA->GetPop();
-	for (int i = 0; i < POP_SIZE; i++)
+	chrom GAPopulation = *m_GA->GetPop();
+	for (int i = 0; i < CHROM_BITS; i++)
 	{
-		for (int j = 0; j < CHROM_BITS; j++)
-		{
-			/*TowerType t = (TowerType)GAPopulation[i].bit[j];
-			int xPos = GAPopulation[i].bitPosX[j];
-			int yPos = GAPopulation[i].bitPosY[j];*/
-			TowerInfo t;
-			t.type = (TowerType)GAPopulation[i].bit[j];
-			t.xPos = GAPopulation[i].bitPosX[j];
-			t.yPos = GAPopulation[i].bitPosY[j];
+		/*TowerType t = (TowerType)GAPopulation[i].bit[j];
+		int xPos = GAPopulation[i].bitPosX[j];
+		int yPos = GAPopulation[i].bitPosY[j];*/
+		TowerInfo t;
+		t.type = (TowerType)GAPopulation.bit[i];
+		t.xPos = GAPopulation.bitPosX[i];
+		t.yPos = GAPopulation.bitPosY[i];
 
-			if (addTower(t))
-			{
-				//cout << "Add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
-			}
-			else
-			{
-				//cout << "Unable to add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
-				towersToAdd.push_back(t);
-			}
+		if (addTower(t))
+		{
+			//cout << "Add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
+		}
+		else
+		{
+			//cout << "Unable to add tower: " << (int)t.type << ", X: " << t.xPos << ", Y: " << t.yPos << endl;
+			towersToAdd.push_back(t);
 		}
 	}
 }

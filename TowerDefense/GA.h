@@ -48,6 +48,8 @@ private:
 	void Crossover();
 	void Mutation();
 
-	chrom popcurrent[POP_SIZE];
+	chrom* popcurrent;
 	chrom popnext[POP_SIZE];
+
+	int currentIndex = 0;
 };

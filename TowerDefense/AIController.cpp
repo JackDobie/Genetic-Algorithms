@@ -28,8 +28,19 @@ AIController::~AIController()
 void AIController::gameOver()
 {
 	//m_GA->SetCurrentScore(m_gameState->getScore());
-	cout << "Score: " << score << endl;
-	score = 0;
+
+	// output chrom
+	cout << "Chrom: ";
+	for (int i = 0; i < CHROM_BITS; i++)
+	{
+		cout << m_GA->GetPop()->bit[i] << " ";
+	}
+	cout << endl;
+	// output score
+	cout << "Score: " << m_gameState->getScore() << endl;
+	// reset score
+	m_gameState->setScore(0);
+	// clear towers
 	towersToAdd.clear();
 	m_GA->Update();
 	GA_iteration++;
@@ -51,7 +62,7 @@ void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPo
 				if (GAPopulation[i].bitPosY[j] == boardPosY)
 				{
 					GAPopulation[i].fit += increaseToScore;
-					score += increaseToScore;
+					//score += increaseToScore;
 					break;
 				}
 			}

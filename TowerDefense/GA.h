@@ -10,7 +10,7 @@
 #define BOARD_WIDTH 24 // 32 is the full width but after 24 towers cannot attack the track
 #define BOARD_HEIGHT 17 // 18 is full width but too low
 
-#define POP_SIZE 4
+#define POP_SIZE 1
 #define CHROM_BITS 5
 
 enum towerBit
@@ -29,6 +29,7 @@ struct chrom
 	int fit;
 };
 
+const int midpoint = POP_SIZE > 1 ? POP_SIZE / 2 : 1;
 class GA
 {
 public:
@@ -40,12 +41,12 @@ public:
 
 	void SetCurrentScore(int score);
 private:
-	void evpop(chrom popcurrent[POP_SIZE]);
+	void evpop();
 	//int x(chrom popcurrent);
 	//int y(int x);
-	void PickChroms(chrom popcurrent[POP_SIZE]);
-	void Crossover(chrom popnext[POP_SIZE]);
-	void Mutation(chrom popnext[POP_SIZE]);
+	void PickChroms();
+	void Crossover();
+	void Mutation();
 
 	chrom popcurrent[POP_SIZE];
 	chrom popnext[POP_SIZE];

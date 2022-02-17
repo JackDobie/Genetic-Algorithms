@@ -30,14 +30,14 @@ void AIController::gameOver()
 	//m_GA->SetCurrentScore(m_gameState->getScore());
 
 	// output chrom
-	cout << "Chrom: ";
+	/*cout << "Chrom: ";
 	for (int i = 0; i < CHROM_BITS; i++)
 	{
 		cout << m_GA->GetPopNext()[m_GA->GetCurrentIndex()].bit[i] << " ";
 	}
-	cout << endl;
+	cout << endl;*/
 	// output score
-	cout << "Score: " << m_gameState->getScore() << endl;
+	//cout << "Score: " << m_gameState->getScore() << endl;
 	// reset score
 	m_gameState->setScore(0);
 	// clear towers
@@ -169,6 +169,7 @@ int AIController::recordScore()
 	iteration++;
 
 	m_gameState->setScore(score);
+	m_GA->SetCurrentScore(score);
 
 	return score;
 }

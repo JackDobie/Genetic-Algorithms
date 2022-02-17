@@ -20,7 +20,7 @@ void GA::Update()
 			mutating = false;
 			currentIndex = -1;
 		}
-		else if (++currentIndex > POP_SIZE)
+		else if (++currentIndex >= POP_SIZE)
 		{
 			Mutation();
 		}
@@ -46,7 +46,7 @@ void GA::Update()
 
 void GA::SetCurrentScore(int score)
 {
-	popcurrent->fit = score;
+	popcurrent[currentIndex].fit = score;
 }
 
 void GA::evpop()
@@ -103,6 +103,18 @@ void GA::PickChroms()
 				popcurrent[i] = temp;
 			}
 		}
+	}
+
+	std::cout << std::endl;
+	for (int i = 0; i < POP_SIZE; i++)
+	{
+		std::cout << "Chrom: ";
+		for (int j = 0; j < CHROM_BITS; j++)
+		{
+			std::cout << popcurrent[i].bit[j] << " ";
+		}
+		std::cout << std::endl;
+		std::cout << "Score: " << popcurrent[i].fit << std::endl;
 	}
 
 	//for (int i = 0; i < POP_SIZE; i++)

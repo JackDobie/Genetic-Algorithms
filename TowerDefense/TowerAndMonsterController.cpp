@@ -75,7 +75,6 @@ void TowerAndMonsterController::updateProjectiles() { //this parameter will be r
 				if (MonsterController->dealDamage(Monster, allThrowObjects[i]->getDamage()))
 				{
 					sf::Vector2f pos = allThrowObjects[i]->getTowerPos();
-					gameBoard->GetAIController()->addTowerScore(1, pos.x, pos.y);
 					// the tower just killed an enemy, so give the tower pos to aicontroller and update the score
 				}
 				//delete throw object

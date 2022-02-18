@@ -46,27 +46,6 @@ void AIController::gameOver()
 	GA_iteration++;
 }
 
-void AIController::addTowerScore(int increaseToScore, int towerPosX, int towerPosY)
-{
-	// each square is 60 pixels. divide by 60 to get the position on the board
-	int boardPosX = towerPosX / 60;
-	int boardPosY = towerPosY / 60;
-
-	chrom GAPopulation = m_GA->GetPopNext()[m_GA->GetCurrentIndex()];
-	for (int i = 0; i < CHROM_BITS; i++)
-	{
-		if (GAPopulation.bitPosX[i] == boardPosX)
-		{
-			if (GAPopulation.bitPosY[i] == boardPosY)
-			{
-				GAPopulation.fit += increaseToScore;
-				//score += increaseToScore;
-				break;
-			}
-		}
-	}
-}
-
 void AIController::update()
 {
 	if (m_Timer == nullptr)

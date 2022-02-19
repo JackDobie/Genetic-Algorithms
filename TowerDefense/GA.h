@@ -10,7 +10,7 @@
 #define BOARD_WIDTH 24 // 32 is the full width but after 24 towers cannot attack the track
 #define BOARD_HEIGHT 17 // 18 is full width but too low
 
-#define POP_SIZE 6
+#define POP_SIZE 8
 #define CHROM_BITS 6
 
 enum towerBit

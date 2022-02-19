@@ -160,26 +160,21 @@ void GA::Crossover()
 		{
 			for (int j = 1; j < random; j++) // crossing bits below the cross point
 			{
-				popnext[i].bit[j] = popnext[i - halfPopSize].bit[j];
+				chrom crossChrom = popnext[i - halfPopSize];
+				popnext[i].bit[j] = crossChrom.bit[j];
+				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
+				popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
 			}
 			for (int j = random; j < CHROM_BITS; j++) // crossing bits above the cross point
 			{
 				int distance = i - halfPopSize - 1;
-				popnext[i].bit[j] = popnext[halfPopSize - distance].bit[j];
+				chrom crossChrom = popnext[halfPopSize - distance];
+				popnext[i].bit[j] = crossChrom.bit[j];
+				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
+				popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
 			}
 		}
 
-		//// old =============
-		//for (int i = 1; i < random; i++) // crossing bits below the cross point
-		//{
-		//	popnext[2].bit[i] = popnext[0].bit[i];
-		//	popnext[3].bit[i] = popnext[1].bit[i];
-		//}
-		//for (int i = random; i < CHROM_BITS; i++) // crossing bits above the cross point
-		//{
-		//	popnext[2].bit[i] = popnext[1].bit[i];
-		//	popnext[3].bit[i] = popnext[0].bit[i];
-		//}
 		currentIndex = 0;
 
 		for (int i = 0; i < POP_SIZE; i++)

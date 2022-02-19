@@ -42,6 +42,10 @@ void GA::Update()
 				popcurrent[i] = popnext[i]; // update popcurrent before it sorts again in pickchroms
 			}
 		}
+		/*else
+		{
+			popcurrent[currentIndex] = popnext[currentIndex];
+		}*/
 	}
 	
 	if (currentIndex == -1)
@@ -154,8 +158,8 @@ void GA::Crossover()
 		std::cout << "Crossover:" << std::endl;
 		int random = (rand() % CHROM_BITS - 1) + 2;
 
-		int halfPopSize = POP_SIZE / 2;
 		// start on half pop size to start on children
+		int halfPopSize = POP_SIZE / 2;
 		for (int i = halfPopSize; i < POP_SIZE; i++)
 		{
 			for (int j = 1; j < random; j++) // crossing bits below the cross point
@@ -175,9 +179,11 @@ void GA::Crossover()
 			}
 		}
 
-		currentIndex = 0;
+		// set to halfpopsize because do not need to re check chroms that did not change
+		currentIndex = halfPopSize;
+		//currentIndex = 0;
 
-		for (int i = 0; i < POP_SIZE; i++)
+		for (int i = halfPopSize; i < POP_SIZE; i++)
 		{
 			popnext[i].fit = 0;
 		}

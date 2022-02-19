@@ -20,7 +20,7 @@ void GA::Update()
 			std::cout << popnext[currentIndex].bit[j] << " ";
 		}
 		std::cout << std::endl;
-		std::cout << "Score: " << popcurrent[currentIndex].fit << std::endl;
+		std::cout << "Score: " << popnext[currentIndex].fit << std::endl;
 
 		//std::cout << "Index: " << currentIndex << ", Score: " << popnext[currentIndex].fit << std::endl;
 		if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
@@ -59,52 +59,57 @@ void GA::Update()
 
 void GA::SetCurrentScore(int score)
 {
-	popnext[currentIndex].fit = score;
+	if (currentIndex != -1)
+	{
+		popnext[currentIndex].fit = score;
+	}
 }
 
 void GA::evpop()
 {
-	int random;
 	srand(time(NULL));
 	// generate chroms for population size
 	for (int i = 0; i < POP_SIZE; i++)
 	{
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
-			//// check if the generated chrom is not the same as the others
-			//for (int k = 0; k < POP_SIZE; k++)
-			//{
-			//	if (k != i)
-			//	{
-			//		random = (rand() % towerBit::thrower) + 1;
-			//		while (random == popcurrent[k].bit[j])
-			//		{
-			//			random = (rand() % towerBit::thrower) + 1;
-			//		}
-			//		popcurrent[i].bit[j] = random;
+			bool canContinue = true;
+			int newPosX, newPosY;
+			// check if the generated chrom is not the same as the others
+			for (int k = 0; k < POP_SIZE; k++)
+			{
+				if (k != i)
+				{
+					/*newBit = (rand() % towerBit::thrower) + 1;
+					while (newBit == popcurrent[k].bit[j])
+					{
+						newBit = (rand() % towerBit::thrower) + 1;
+					}
+					popcurrent[i].bit[j] = newBit;*/
 
-			//		random = rand() % BOARD_WIDTH;
-			//		while (random == popcurrent[k].bitPosX[j])
-			//		{
-			//			random = rand() % BOARD_WIDTH;
-			//		}
-			//		popcurrent[i].bitPosX[j] = random;
+					newPosX = rand() % BOARD_WIDTH;
+					while (newPosX == popcurrent[k].bitPosX[j])
+					{
+						newPosX = rand() % BOARD_WIDTH;
+					}
+					popcurrent[i].bitPosX[j] = newPosX;
 
-			//		random = rand() % BOARD_HEIGHT;
-			//		while (random == popcurrent[k].bitPosY[j])
-			//		{
-			//			random = rand() % BOARD_HEIGHT;
-			//		}
-			//		popcurrent[i].bitPosY[j] = random;
-			//	}
-			//}
-			random = (rand() % towerBit::thrower) + 1;
-			popcurrent[i].bit[j] = random;
-			random = rand() % BOARD_WIDTH;
-			popcurrent[i].bitPosX[j] = random;
-			random = rand() % BOARD_HEIGHT;
-			popcurrent[i].bitPosY[j] = random;
-			popcurrent[i].fit = 0;
+					newPosY = rand() % BOARD_HEIGHT;
+					while (newPosY == popcurrent[k].bitPosY[j])
+					{
+						newPosY = rand() % BOARD_HEIGHT;
+					}
+					popcurrent[i].bitPosY[j] = newPosY;
+				}
+			}
+
+			int newBit = (rand() % towerBit::thrower) + 1;
+			popcurrent[i].bit[j] = newBit;
+			//random = rand() % BOARD_WIDTH;
+			//popcurrent[i].bitPosX[j] = random;
+			//random = rand() % BOARD_HEIGHT;
+			//popcurrent[i].bitPosY[j] = random;
+			//popcurrent[i].fit = 0;
 		}
 
 		popnext[i] = popcurrent[i];
@@ -131,7 +136,7 @@ void GA::PickChroms()
 	std::cout << "\n========================\n";
 	for (int i = 0; i < POP_SIZE; i++)
 	{
-		std::cout << "Chrom: ";
+		std::cout << "Chrom " << i << ": ";
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
 			std::cout << popcurrent[i].bit[j] << " ";
@@ -147,18 +152,34 @@ void GA::Crossover()
 	if (POP_SIZE > 1)
 	{
 		std::cout << "Crossover:" << std::endl;
-		int random = (rand() % CHROM_BITS) + 1;
+		int random = (rand() % CHROM_BITS - 1) + 2;
 
-		for (int i = 1; i < random; i++) // crossing bits below the cross point
+		int halfPopSize = POP_SIZE / 2;
+		// start on half pop size to start on children
+		for (int i = halfPopSize; i < POP_SIZE; i++)
 		{
-			popnext[2].bit[i] = popnext[0].bit[i];
-			popnext[3].bit[i] = popnext[1].bit[i];
+			for (int j = 1; j < random; j++) // crossing bits below the cross point
+			{
+				popnext[i].bit[j] = popnext[i - halfPopSize].bit[j];
+			}
+			for (int j = random; j < CHROM_BITS; j++) // crossing bits above the cross point
+			{
+				int distance = i - halfPopSize - 1;
+				popnext[i].bit[j] = popnext[halfPopSize - distance].bit[j];
+			}
 		}
-		for (int i = random; i < CHROM_BITS; i++) // crossing bits above the cross point
-		{
-			popnext[2].bit[i] = popnext[1].bit[i];
-			popnext[3].bit[i] = popnext[0].bit[i];
-		}
+
+		//// old =============
+		//for (int i = 1; i < random; i++) // crossing bits below the cross point
+		//{
+		//	popnext[2].bit[i] = popnext[0].bit[i];
+		//	popnext[3].bit[i] = popnext[1].bit[i];
+		//}
+		//for (int i = random; i < CHROM_BITS; i++) // crossing bits above the cross point
+		//{
+		//	popnext[2].bit[i] = popnext[1].bit[i];
+		//	popnext[3].bit[i] = popnext[0].bit[i];
+		//}
 		currentIndex = 0;
 
 		for (int i = 0; i < POP_SIZE; i++)
@@ -184,13 +205,15 @@ void GA::Mutation()
 		}
 		std::cout << " -> ";
 
+		chrom newChrom = popnext[chromIndex];
+
 		// make new random bit that is not the same
 		short newBit = (rand() % towerBit::thrower) + 1;
 		while (newBit == popnext[chromIndex].bit[bitIndex])
 		{
 			newBit = (rand() % towerBit::thrower) + 1;
 		}
-		popnext[chromIndex].bit[bitIndex] = newBit;
+		newChrom.bit[bitIndex] = newBit;
 
 		// make new random X position
 		short int newPosX = rand() % BOARD_WIDTH;
@@ -198,7 +221,7 @@ void GA::Mutation()
 		{
 			newPosX = rand() % BOARD_WIDTH;
 		}
-		popnext[chromIndex].bitPosX[bitIndex] = newPosX;
+		newChrom.bitPosX[bitIndex] = newPosX;
 
 		// make new random Y position
 		short int newPosY = rand() % BOARD_HEIGHT;
@@ -206,7 +229,9 @@ void GA::Mutation()
 		{
 			newPosY = rand() % BOARD_HEIGHT;
 		}
-		popnext[chromIndex].bitPosY[bitIndex] = newPosY;
+		newChrom.bitPosY[bitIndex] = newPosY;
+
+		popnext[chromIndex] = newChrom;
 
 		for (int i = 0; i < CHROM_BITS; i++)
 		{

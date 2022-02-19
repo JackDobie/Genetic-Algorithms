@@ -139,14 +139,6 @@ int AIController::recordScore()
 	currentWave *= 10; // living longer is good
 	int score = currentWave + killCount;
 
-	static int iteration = 0;
-
-	/*if (iteration == 0)
-		cout << "iteration" << "," << "wave" << "," << "kills" << "," << "score" << endl;
-
-	cout << iteration << "," << m_gameState->getCurrentWave() << "," << m_gameState->getMonsterEliminated() << "," << score << endl;*/
-	iteration++;
-
 	m_gameState->setScore(score);
 	m_GA->SetCurrentScore(score);
 

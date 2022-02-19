@@ -11,7 +11,8 @@
 #define BOARD_HEIGHT 17 // 18 is full width but too low
 
 #define POP_SIZE 8
-#define CHROM_BITS 6
+#define CHROM_BITS 8
+#define CROSSOVER_PARENTS 3
 
 enum towerBit
 {

@@ -156,45 +156,45 @@ void GA::Crossover()
 	if (POP_SIZE > 1)
 	{
 		std::cout << "Crossover:" << std::endl;
-		int random = (rand() % CHROM_BITS - 1) + 2;
+		int random = (rand() % CHROM_BITS) + 1;
 
 		// start on half pop size to start on children
-		int halfPopSize = POP_SIZE / 2;
-		for (int i = halfPopSize; i < POP_SIZE; i++)
+		//int halfPopSize = POP_SIZE / 2;
+		for (int i = CROSSOVER_PARENTS; i < POP_SIZE; i++)
 		{
 			for (int j = 1; j < random; j++) // crossing bits below the cross point
 			{
-				chrom crossChrom = popnext[i - halfPopSize];
+				// if crossover indx greater than 1, take 1. this makes the index different to the index after the cross point
+				int index = j % (CROSSOVER_PARENTS > 1 ? CROSSOVER_PARENTS - 1 : CROSSOVER_PARENTS);
+				chrom crossChrom = popnext[index];
 				popnext[i].bit[j] = crossChrom.bit[j];
 				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
 				popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
 			}
 			for (int j = random; j < CHROM_BITS; j++) // crossing bits above the cross point
 			{
-				int distance = i - halfPopSize - 1;
-				chrom crossChrom = popnext[halfPopSize - distance];
+				int index = j % CROSSOVER_PARENTS;
+				chrom crossChrom = popnext[index];
 				popnext[i].bit[j] = crossChrom.bit[j];
 				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
 				popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
 			}
-		}
-
-		// set to halfpopsize because do not need to re check chroms that did not change
-		currentIndex = halfPopSize;
-		//currentIndex = 0;
-
-		for (int i = halfPopSize; i < POP_SIZE; i++)
-		{
 			popnext[i].fit = 0;
 		}
+
+		// set to parents size because do not need to re check chroms that did not change (parents)
+		currentIndex = CROSSOVER_PARENTS;
+
+		/*for (int i = currentIndex; i < POP_SIZE; i++)
+		{
+			popnext[i].fit = 0;
+		}*/
 	}
 }
 
 void GA::Mutation()
 {
-	int random = rand() % 3;
-
-	if (random == 1)
+	if ((rand() % 2) == 1)
 	{
 		int bitIndex = rand() % CHROM_BITS;
 		int chromIndex = rand() % POP_SIZE;

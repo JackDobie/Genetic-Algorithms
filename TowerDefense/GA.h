@@ -10,9 +10,14 @@
 #define BOARD_WIDTH 24 // 32 is the full width but after 24 towers cannot attack the track
 #define BOARD_HEIGHT 17 // 18 is full width but too low
 
-#define POP_SIZE 8
+// number of chroms
+#define POP_SIZE 10
+// number of bits per chrom
 #define CHROM_BITS 8
+// number of parents used in crossover
 #define CROSSOVER_PARENTS 3
+// number of chroms to be randomly generated in picknewchroms()
+#define NEW_CHROMS 5
 
 enum towerBit
 {
@@ -46,11 +51,15 @@ public:
 	int GetCurrentIndex() { return currentIndex; }
 private:
 	void evpop();
-	//int x(chrom popcurrent);
-	//int y(int x);
+
+	// order the chroms in popcurrent
 	void PickChroms();
+	// crossover parents to the children
 	void Crossover();
+	// random chance to mutate a bit, changing its tower and position
 	void Mutation();
+	// random chance to pick new chroms. creates random bits for the lowest scoring towers. amount defined by NEW_CHROMS
+	void PickNewChroms();
 
 	chrom popcurrent[POP_SIZE];
 	chrom popnext[POP_SIZE];

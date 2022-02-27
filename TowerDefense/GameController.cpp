@@ -364,6 +364,7 @@ int main() {
 	window->setFramerateLimit(60);
 	//window->setFramerateLimit(0);
 	//window->setVerticalSyncEnabled(false);
+	srand(time(NULL));
 	
 	Timer* clk;
 	GameState* gameState;

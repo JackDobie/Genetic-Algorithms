@@ -1,4 +1,5 @@
 #include "GA.h"
+#include <fstream>
 
 GA::GA()
 {
@@ -51,7 +52,7 @@ void GA::Update()
 	if (currentIndex == -1)
 	{
 		PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
-
+		LogBestChroms();
 		Crossover();
 	}
 }
@@ -283,4 +284,29 @@ void GA::PickNewChroms()
 	{
 		currentIndex = -1;
 	}
+}
+
+void GA::LogBestChroms()
+{
+	std::ofstream stream("Log.txt", std::ios_base::app);
+
+	if (stream.good())
+	{
+		if (!prevOpenedFile) // clear file on first load
+		{
+			stream.clear();
+			prevOpenedFile = true;
+		}
+
+		for (int i = 0; i < CHROM_BITS; i++)
+		{
+			stream << popcurrent[0].bit[i] << " | X: " << popcurrent[0].bitPosX[i] << ", Y: " << popcurrent[0].bitPosY[i] << "\n";
+		}
+		stream << "Score: " << popcurrent[0].fit << "\n\n";
+	}
+	else
+	{
+		std::cout << "Error opening file!" << std::endl;
+	}
+	stream.close();
 }

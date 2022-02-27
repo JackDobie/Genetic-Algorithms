@@ -62,6 +62,8 @@ private:
 	bool Mutation();
 	// random chance to pick new chroms. creates random bits for the lowest scoring towers. amount defined by NEW_CHROMS
 	void PickNewChroms();
+	// save the current best chroms to a log file
+	void LogBestChroms();
 
 	chrom popcurrent[POP_SIZE];
 	chrom popnext[POP_SIZE];
@@ -73,4 +75,6 @@ private:
 	
 	// will be true when just picked new chroms. prevents it from picking new chroms until sorted again
 	bool pickedNewChroms = false;
+
+	bool prevOpenedFile = false;
 };

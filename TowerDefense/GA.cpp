@@ -51,7 +51,7 @@ void GA::Update()
 	if (currentIndex == -1)
 	{
 		PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
-		LogBestChroms();
+		Selection();
 		Crossover();
 	}
 }
@@ -144,6 +144,101 @@ void GA::PickChroms()
 	{
 		popnext[i] = popcurrent[i]; // update popnext with the sorted chroms
 	}
+	LogBestChroms();
+}
+
+void GA::Selection()
+{
+	switch (SELECTION_TYPE)
+	{
+	case 0:
+		//tournament
+		break;
+	case 1:
+		//roulette
+		RouletteSelection();
+		break;
+	case 2:
+		//rank
+		RankSelection();
+		break;
+	case 3:
+		//steadystate
+		SteadyStateSelection();
+		break;
+	case 4:
+		//elitism
+		ElitismSelection();
+		break;
+	case 5:
+		//boltzmann
+		BoltzmannSelection();
+		break;
+	default:
+		std::cout << "SELECTION_TYPE out of range! Value was " << SELECTION_TYPE << std::endl;
+	}
+}
+
+void GA::TournamentSelection()
+{
+
+}
+
+void GA::RouletteSelection()
+{
+	std::cout << "\nRoulette selection: chosen ";
+	// loop to select multiple parents
+	for (int i = 0; i < CROSSOVER_PARENTS; i++)
+	{
+		// find the total sum of all chroms
+		int fitnessSum = 0;
+		for (int j = 0; j < POP_SIZE; j++)
+		{
+			fitnessSum += popnext[j].fit;
+		}
+
+		// create a random number between 0 and fitnessSum
+		int randPoint = rand() % fitnessSum;
+
+		// add up fitness until fitness is greater than randPoint. this is chosen to be parent
+		int partialSum = 0;
+		int chosenChrom = 0;
+		for (int j = 0; j < POP_SIZE; j++)
+		{
+			partialSum += popnext[j].fit;
+			if (partialSum > randPoint)
+			{
+				chosenChrom = j;
+				break;
+			}
+		}
+
+		// swap i and chosenchrom. i is the position of a parent
+		chrom temp = popnext[chosenChrom];
+		popnext[chosenChrom] = popnext[i];
+		popnext[i] = temp;
+		std::cout << chosenChrom << (i < CROSSOVER_PARENTS - 1 ? "," : "\n\n") << std::flush;
+	}
+}
+
+void GA::RankSelection()
+{
+
+}
+
+void GA::SteadyStateSelection()
+{
+
+}
+
+void GA::ElitismSelection()
+{
+
+}
+
+void GA::BoltzmannSelection()
+{
+
 }
 
 void GA::Crossover()

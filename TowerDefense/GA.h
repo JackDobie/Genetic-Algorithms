@@ -25,6 +25,9 @@ using std::vector;
 #define CROSSOVER_POINT (CHROM_BITS / 2)
 // number of chroms to be randomly generated in picknewchroms()
 #define NEW_CHROMS 5
+// the way parents are selected
+// 0=tournament, 1=roulette
+#define SELECTION_TYPE 1
 
 enum towerBit
 {
@@ -59,10 +62,21 @@ public:
 private:
 	void evpop();
 
-	// order the chroms in popcurrent
+	// order the chroms in popcurrent by fitness
 	void PickChroms();
+	// select which chroms should be parents
+	void Selection();
+
+	void TournamentSelection();
+	void RouletteSelection();
+	void RankSelection();
+	void SteadyStateSelection();
+	void ElitismSelection();
+	void BoltzmannSelection();
+
 	// crossover parents to the children
 	void Crossover();
+
 	// random chance to mutate a bit, changing its tower and position
 	bool Mutation();
 	// random chance to pick new chroms. creates random bits for the lowest scoring towers. amount defined by NEW_CHROMS

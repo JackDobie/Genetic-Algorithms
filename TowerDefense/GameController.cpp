@@ -133,6 +133,7 @@ void GameBoard::Reset(GameState* _gameState, TowerController* _towerController)
 {
 	gameState = _gameState;
 	towerController = _towerController;
+	memset(gridStatus, 0, sizeof(gridStatus[0][0]) * 32 * 18); // reset gridstatus to 0
 }
 
 bool GameBoard::gridSpaceAvailable(int gridX, int gridY) {

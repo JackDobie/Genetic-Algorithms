@@ -1,5 +1,4 @@
 #include "GA.h"
-#include <fstream>
 
 GA::GA()
 {
@@ -8,6 +7,7 @@ GA::GA()
 
 GA::~GA()
 {
+	logFile.close();
 }
 
 void GA::Update()
@@ -15,13 +15,12 @@ void GA::Update()
 	// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
 	if (currentIndex != -1)
 	{
-		std::cout << "Index: " << currentIndex << ": ";
+		std::cout << "Index: " << currentIndex << ": " << std::flush;
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
-			std::cout << popnext[currentIndex].bit[j] << " ";
+			std::cout << popnext[currentIndex].bit[j] << std::flush;
 		}
-		std::cout << std::endl;
-		std::cout << "Score: " << popnext[currentIndex].fit << std::endl;
+		std::cout << "\nScore: " << popnext[currentIndex].fit << std::endl;
 
 		if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
 		{
@@ -114,7 +113,6 @@ void GA::PickChroms()
 		popcurrent[i] = popnext[i];
 	}
 
-	chrom temp;
 	for (int i = 0; i < POP_SIZE; i++)
 	{
 		for (int j = i + 1; j <= POP_SIZE; j++)
@@ -122,7 +120,7 @@ void GA::PickChroms()
 			if (popcurrent[j].fit > popcurrent[i].fit)
 			{
 				//std::cout << "new chroms picked: " << popcurrent[j].fit << std::endl;
-				temp = popcurrent[j];
+				chrom temp = popcurrent[j];
 				popcurrent[j] = popcurrent[i];
 				popcurrent[i] = temp;
 			}
@@ -276,7 +274,7 @@ void GA::PickNewChroms()
 				popnext[i].fit = 0;
 			}
 		}
-		std::cout << "\n------------------------\n\n";
+		std::cout << "------------------------\n\n";
 		currentIndex = index;
 		pickedNewChroms = true;
 	}
@@ -288,25 +286,20 @@ void GA::PickNewChroms()
 
 void GA::LogBestChroms()
 {
-	std::ofstream stream("Log.txt", std::ios_base::app);
-
-	if (stream.good())
+	string newLog = "";
+	for (int i = 0; i < CHROM_BITS; i++)
 	{
-		if (!prevOpenedFile) // clear file on first load
-		{
-			stream.clear();
-			prevOpenedFile = true;
-		}
+		newLog.append(std::to_string(popcurrent[0].bit[i]) + " | X: " + std::to_string(popcurrent[0].bitPosX[i]) + ", Y: " + std::to_string(popcurrent[0].bitPosY[i]) + "\n");
+	}
+	newLog.append("Score: " + std::to_string(popcurrent[0].fit) + "\n\n");
 
-		for (int i = 0; i < CHROM_BITS; i++)
-		{
-			stream << popcurrent[0].bit[i] << " | X: " << popcurrent[0].bitPosX[i] << ", Y: " << popcurrent[0].bitPosY[i] << "\n";
-		}
-		stream << "Score: " << popcurrent[0].fit << "\n\n";
+	if (logFile && logFile.good())
+	{
+		logFile << newLog;
 	}
 	else
 	{
 		std::cout << "Error opening file!" << std::endl;
 	}
-	stream.close();
+	logFile.flush();
 }

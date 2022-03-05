@@ -129,6 +129,12 @@ GameBoard::~GameBoard()
 	delete _helpTexture;
 }
 
+void GameBoard::Reset(GameState* _gameState, TowerController* _towerController)
+{
+	gameState = _gameState;
+	towerController = _towerController;
+}
+
 bool GameBoard::gridSpaceAvailable(int gridX, int gridY) {
 	if (gridStatus[gridX][gridY] == 0 && gridStatus[gridX + 1][gridY] == 0
 			&& gridStatus[gridX][gridY + 1] == 0
@@ -340,11 +346,8 @@ void resetGame(Timer** clk, GameState** gameState, GameMenuController** gameMenu
 
 	if (*gameBoard != nullptr)
 	{
-		GameBoard board = **gameBoard;
-		AIController* aiController = board.GetAIController();
-		*gameBoard = new GameBoard(*gameState, *towerController, (int)(*gameMenuController)->getMenuPos().x);
 		GameBoard* pBoard = *gameBoard;
-		pBoard->SetAIController(aiController);
+		pBoard->Reset(*gameState, *towerController);
 	}
 	else
 	{

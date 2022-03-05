@@ -41,6 +41,8 @@ public:
 			int widthInPixels);
 	~GameBoard();
 
+	void Reset(GameState* gameState, TowerController* towerController);
+
 	bool validatePos(int mouseX, int mouseY, int range);
 	void process(sf::Event event, sf::Vector2i mousePos);
 	void update();

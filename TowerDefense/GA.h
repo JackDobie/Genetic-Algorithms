@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+using std::string;
+using std::vector;
 
 //32 x 18
 #define BOARD_WIDTH_FULL 32
@@ -76,5 +81,5 @@ private:
 	// will be true when just picked new chroms. prevents it from picking new chroms until sorted again
 	bool pickedNewChroms = false;
 
-	bool prevOpenedFile = false;
+	std::ofstream logFile = std::ofstream("Log.txt", std::ios_base::app);
 };

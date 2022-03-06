@@ -15,12 +15,15 @@ void GA::Update()
 	// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
 	if (currentIndex != -1)
 	{
-		std::cout << "Index: " << chromsToTest[currentIndex] << ": " << std::flush;
-		for (int j = 0; j < CHROM_BITS; j++)
+		if (!chromsToTest.empty())
 		{
-			std::cout << popnext[chromsToTest[currentIndex]].bit[j] << std::flush;
+			std::cout << "Index: " << chromsToTest[currentIndex] << ": " << std::flush;
+			for (int j = 0; j < CHROM_BITS; j++)
+			{
+				std::cout << popnext[chromsToTest[currentIndex]].bit[j] << std::flush;
+			}
+			std::cout << "\nScore: " << popnext[chromsToTest[currentIndex]].fit << std::endl;
 		}
-		std::cout << "\nScore: " << popnext[chromsToTest[currentIndex]].fit << std::endl;
 
 		if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
 		{
@@ -62,6 +65,10 @@ void GA::Update()
 		PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
 		Selection();
 		Crossover();
+		if (chromsToTest.empty())
+		{
+			Update(); // redo update if empty, to do mutation/picknewchroms
+		}
 	}
 }
 

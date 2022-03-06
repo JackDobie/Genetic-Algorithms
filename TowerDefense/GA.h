@@ -37,7 +37,7 @@ struct chrom
 	short int bit[CHROM_BITS];
 	int fit;
 
-	bool operator ==(chrom& c)
+	bool operator ==(chrom c)
 	{
 		for (int i = 0; i < CHROM_BITS; i++)
 		{
@@ -56,7 +56,7 @@ struct chrom
 		}
 		return true;
 	}
-	bool operator!=(chrom& c)
+	bool operator!=(chrom c)
 	{
 		return !(operator==(c));
 	}

@@ -15,19 +15,19 @@ void GA::Update()
 	// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
 	if (currentIndex != -1)
 	{
-		std::cout << "Index: " << currentIndex << ": " << std::flush;
+		std::cout << "Index: " << chromsToTest[currentIndex] << ": " << std::flush;
 		for (int j = 0; j < CHROM_BITS; j++)
 		{
-			std::cout << popnext[currentIndex].bit[j] << std::flush;
+			std::cout << popnext[chromsToTest[currentIndex]].bit[j] << std::flush;
 		}
-		std::cout << "\nScore: " << popnext[currentIndex].fit << std::endl;
+		std::cout << "\nScore: " << popnext[chromsToTest[currentIndex]].fit << std::endl;
 
 		if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
 		{
 			mutating = false;
 			currentIndex = -1;
 		}
-		else if (++currentIndex >= POP_SIZE) // update index. if index greater than max, check for mutation which will change currentindex once finished
+		else if (++currentIndex >= chromsToTest.size()) // update index. if index greater than max, check for mutation which will change currentindex once finished
 		{
 			if (rand() % 2 == 1)
 			{
@@ -48,8 +48,10 @@ void GA::Update()
 		}
 	}
 	
+	// found fitness of each chroms that needed testing, now to sort and crossover
 	if (currentIndex == -1)
 	{
+		chromsToTest.clear(); // clear chromstotest because they have all been tested
 		PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
 		Selection();
 		Crossover();
@@ -60,7 +62,20 @@ void GA::SetCurrentScore(int score)
 {
 	if (currentIndex != -1)
 	{
-		popnext[currentIndex].fit = score;
+		popnext[chromsToTest[currentIndex]].fit = score;
+	}
+}
+
+int GA::GetCurrentIndex()
+{
+	if (!chromsToTest.empty())
+	{
+		return chromsToTest[currentIndex];
+	}
+	else
+	{
+		std::cout << "chromsToTest is empty! Using index 0" << std::endl;
+		return 0;
 	}
 }
 
@@ -103,6 +118,7 @@ void GA::evpop()
 		}
 
 		popnext[i] = popcurrent[i];
+		chromsToTest.push_back(i);
 	}
 }
 
@@ -149,7 +165,7 @@ void GA::PickChroms()
 
 void GA::Selection()
 {
-	switch (SELECTION_TYPE)
+	switch (selectionType)
 	{
 	case 0:
 		//tournament
@@ -160,7 +176,6 @@ void GA::Selection()
 		break;
 	case 2:
 		//rank
-		RankSelection();
 		break;
 	case 3:
 		//steadystate
@@ -175,7 +190,7 @@ void GA::Selection()
 		BoltzmannSelection();
 		break;
 	default:
-		std::cout << "SELECTION_TYPE out of range! Value was " << SELECTION_TYPE << std::endl;
+		std::cout << "selectionType out of range! Value was " << selectionType << std::endl;
 	}
 }
 
@@ -221,11 +236,6 @@ void GA::RouletteSelection()
 	}
 }
 
-void GA::RankSelection()
-{
-
-}
-
 void GA::SteadyStateSelection()
 {
 
@@ -247,8 +257,8 @@ void GA::Crossover()
 	{
 		std::cout << "Crossover:" << std::endl;
 
-		int crossPoint = CROSSOVER_POINT;
-		if (CROSSOVER_POINT == -1)
+		int crossPoint = crossoverPoint;
+		if (crossoverPoint == -1)
 		{
 			crossPoint = (rand() % CHROM_BITS) + 1;
 		}
@@ -256,6 +266,7 @@ void GA::Crossover()
 		// start on parent size to start on children
 		for (int i = CROSSOVER_PARENTS; i < POP_SIZE; i++)
 		{
+			chrom currentChrom;
 			for (int j = 1; j < crossPoint; j++) // crossing bits below the cross point
 			{
 				// if crossover index greater than 1, take 1. this makes the index different to the index after the cross point
@@ -273,16 +284,13 @@ void GA::Crossover()
 				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
 				popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
 			}
-			popnext[i].fit = 0;
+			if (popnext[i] != currentChrom)
+			{
+				popnext[i].fit = 0;
+				chromsToTest.push_back(i);
+			}
 		}
-
-		// set to parents size because do not need to re check chroms that did not change (parents)
-		currentIndex = CROSSOVER_PARENTS;
-
-		/*for (int i = currentIndex; i < POP_SIZE; i++)
-		{
-			popnext[i].fit = 0;
-		}*/
+		currentIndex = 0;
 	}
 }
 
@@ -353,7 +361,7 @@ void GA::PickNewChroms()
 		PickChroms(); // sort chroms
 
 		std::cout << "\n------------------------\nPicked new chroms!\nIndex: ";
-		int index = POP_SIZE - NEW_CHROMS;
+		int index = POP_SIZE - 1 - newChroms;
 		// generate new random chroms that score the lowest
 		for (int i = index; i < POP_SIZE; i++)
 		{

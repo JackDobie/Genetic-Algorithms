@@ -111,6 +111,7 @@ private:
 	chrom popcurrent[POP_SIZE];
 	chrom popnext[POP_SIZE];
 
+	// the current index within chromsToTest
 	int currentIndex = 0;
 	// stores the indexes of chroms that have changed and need testing
 	vector<int> chromsToTest = vector<int>();

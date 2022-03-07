@@ -83,14 +83,21 @@ private:
 	// select which chroms should be parents
 	void Selection();
 
-	void TournamentSelection();
-	void RouletteSelection();
-	void SteadyStateSelection();
-	void ElitismSelection();
-	void BoltzmannSelection();
 	// the way parents are selected
-	// 0=tournament, 1=roulette
-	const int selectionType = 1;
+	// 0=tournament, 1=roulette, 2=rank, 3=steady state
+	const int selectionType = 3;
+	void TournamentSelection();
+
+	void RouletteSelection();
+
+	void SteadyStateSelection();
+	// the number of chroms to be replaced during steady state selection
+	const int steadyStateRemoved = POP_SIZE - CROSSOVER_PARENTS - 4;
+	void SteadyStateCrossover(vector<int> indexes);
+
+	void ElitismSelection();
+
+	void BoltzmannSelection();
 
 	// crossover parents to the children
 	void Crossover();

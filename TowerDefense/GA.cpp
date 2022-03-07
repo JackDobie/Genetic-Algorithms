@@ -24,6 +24,10 @@ void GA::Update()
 			}
 			std::cout << "\nScore: " << popnext[chromsToTest[currentIndex]].fit << std::endl;
 		}
+		else
+		{
+			std::cout << "No new chroms to test" << std::endl;
+		}
 
 		if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
 		{
@@ -64,7 +68,7 @@ void GA::Update()
 		chromsToTest.clear(); // clear chromstotest because they have all been tested
 		PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
 		Selection();
-		Crossover();
+		//Crossover();
 		if (chromsToTest.empty())
 		{
 			Update(); // redo update if empty, to do mutation/picknewchroms
@@ -186,10 +190,12 @@ void GA::Selection()
 	{
 	case 0:
 		//tournament
+		Crossover();
 		break;
 	case 1:
 		//roulette
 		RouletteSelection();
+		Crossover();
 		break;
 	case 2:
 		//rank
@@ -201,10 +207,12 @@ void GA::Selection()
 	case 4:
 		//elitism
 		ElitismSelection();
+		Crossover();
 		break;
 	case 5:
 		//boltzmann
 		BoltzmannSelection();
+		Crossover();
 		break;
 	default:
 		std::cout << "selectionType out of range! Value was " << selectionType << std::endl;
@@ -255,7 +263,61 @@ void GA::RouletteSelection()
 
 void GA::SteadyStateSelection()
 {
+	std::cout << "\nSteady State Selection: chosen ";
+	// holds indexes of chroms to be removed
+	vector<int> indexes;
+	for (int i = 0; i < steadyStateRemoved; i++)
+	{
+		int childIndex = (rand() % (POP_SIZE - CROSSOVER_PARENTS)) + CROSSOVER_PARENTS;
+		while (std::find(indexes.begin(), indexes.end(), childIndex) != indexes.end())
+		{
+			// indexes contains childindex, so find another
+			childIndex = (rand() % (POP_SIZE - CROSSOVER_PARENTS)) + CROSSOVER_PARENTS;
+		}
+		indexes.push_back(childIndex);
+		std::cout << childIndex << ((i < (steadyStateRemoved - 1)) ? "," : "\n");
+	}
+	SteadyStateCrossover(indexes);
+}
 
+void GA::SteadyStateCrossover(vector<int> indexes)
+{
+	std::cout << "Crossover:" << std::endl;
+
+	int crossPoint = crossoverPoint;
+	if (crossoverPoint == -1)
+	{
+		crossPoint = (rand() % CHROM_BITS) + 1;
+	}
+
+	// start on parent size to start on children
+	for (int i = 0; i < indexes.size(); i++)
+	{
+		chrom currentChrom = popnext[indexes[i]];
+		for (int j = 1; j < crossPoint; j++) // crossing bits below the cross point
+		{
+			// if crossover index greater than 1, take 1. this makes the index different to the index after the cross point
+			int index = j % (CROSSOVER_PARENTS > 1 ? CROSSOVER_PARENTS - 1 : CROSSOVER_PARENTS);
+			chrom crossChrom = popnext[index];
+			popnext[indexes[i]].bit[j] = crossChrom.bit[j];
+			popnext[indexes[i]].bitPosX[j] = crossChrom.bitPosX[j];
+			popnext[indexes[i]].bitPosY[j] = crossChrom.bitPosY[j];
+		}
+		for (int j = crossPoint; j < CHROM_BITS; j++) // crossing bits above the cross point
+		{
+			int index = j % CROSSOVER_PARENTS;
+			chrom crossChrom = popnext[index];
+			popnext[indexes[i]].bit[j] = crossChrom.bit[j];
+			popnext[indexes[i]].bitPosX[j] = crossChrom.bitPosX[j];
+			popnext[indexes[i]].bitPosY[j] = crossChrom.bitPosY[j];
+		}
+		if (popnext[i] != currentChrom)
+		{
+			popnext[indexes[i]].fit = 0;
+			chromsToTest.push_back(indexes[i]);
+		}
+	}
+	currentIndex = 0;
 }
 
 void GA::ElitismSelection()
@@ -318,7 +380,7 @@ bool GA::Mutation()
 		int bitIndex = rand() % CHROM_BITS;
 		int chromIndex = rand() % POP_SIZE;
 		// randomise bit
-		std::cout << "\n------------------------\nMutation! Index: " << chromIndex << std::endl;
+		std::cout << "------------------------\nMutation! Index: " << chromIndex << std::endl;
 		for (int i = 0; i < CHROM_BITS; i++)
 		{
 			std::cout << popnext[chromIndex].bit[i];
@@ -378,7 +440,7 @@ void GA::PickNewChroms()
 	{
 		PickChroms(); // sort chroms
 
-		std::cout << "\n------------------------\nPicked new chroms!\nIndex: ";
+		std::cout << "------------------------\nPicked new chroms!\nIndex: ";
 		int index = POP_SIZE - 1 - newChroms;
 		currentIndex = chromsToTest.size();
 		// generate new random chroms that score the lowest

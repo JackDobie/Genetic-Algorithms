@@ -2,7 +2,40 @@
 
 GA::GA()
 {
-	evpop();
+	if (LOADING_CHROM)
+	{
+		loadChrom.bit[0] = 1;
+		loadChrom.bitPosX[0] = 12;
+		loadChrom.bitPosY[0] = 10;
+
+		loadChrom.bit[1] = 3;
+		loadChrom.bitPosX[1] = 22;
+		loadChrom.bitPosY[1] = 12;
+
+		loadChrom.bit[2] = 1;
+		loadChrom.bitPosX[2] = 13;
+		loadChrom.bitPosY[2] = 4;
+
+		loadChrom.bit[3] = 3;
+		loadChrom.bitPosX[3] = 21;
+		loadChrom.bitPosY[3] = 2;
+
+		loadChrom.bit[4] = 1;
+		loadChrom.bitPosX[4] = 7;
+		loadChrom.bitPosY[4] = 14;
+
+		loadChrom.bit[5] = 3;
+		loadChrom.bitPosX[5] = 17;
+		loadChrom.bitPosY[5] = 1;
+
+		popcurrent[0] = loadChrom;
+		popnext[0] = loadChrom;
+		currentIndex = 0;
+	}
+	else
+	{
+		evpop();
+	}
 }
 
 GA::~GA()
@@ -12,66 +45,87 @@ GA::~GA()
 
 void GA::Update()
 {
-	// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
-	if (currentIndex != -1)
+	if (LOADING_CHROM)
 	{
-		if (!chromsToTest.empty())
-		{
-			std::cout << "Index: " << chromsToTest[currentIndex] << ": " << std::flush;
-			for (int j = 0; j < CHROM_BITS; j++)
-			{
-				std::cout << popnext[chromsToTest[currentIndex]].bit[j] << std::flush;
-			}
-			std::cout << "\nScore: " << popnext[chromsToTest[currentIndex]].fit << std::endl;
-		}
-		else
-		{
-			std::cout << "No new chroms to test" << std::endl;
-		}
 
-		if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
+	}
+	else
+	{
+		// setting currentindex to -1 shows that it is ready to do GA again, otherwise it is checking fitness of each chrom
+		if (currentIndex != -1)
 		{
-			mutating = false;
-			currentIndex = -1;
-		}
-		else
-		{
-			//if (popnext[chromsToTest[++currentIndex]].fit != 0) // increase current index by 1
-			//{
-			//	++currentIndex; // if current chrom fit is not 0, it must have been tested before therefore skip
-			//}
-			if (++currentIndex >= chromsToTest.size()) // update index. if index greater than max, check for mutation which will change currentindex once finished
+			if (!chromsToTest.empty())
 			{
-				if (rand() % 2 == 1)
+				std::cout << "Index: " << chromsToTest[currentIndex] << ": " << std::flush;
+				for (int j = 0; j < CHROM_BITS; j++)
 				{
-					Mutation();
+					std::cout << popnext[chromsToTest[currentIndex]].bit[j] << std::flush;
 				}
-				else
+				std::cout << "\nScore: " << popnext[chromsToTest[currentIndex]].fit << std::endl;
+			}
+			else
+			{
+				std::cout << "No new chroms to test" << std::endl;
+			}
+
+			if (mutating) // if mutating, only want to check fitness of that one chrom, so can change back to -1 after fitness was found
+			{
+				mutating = false;
+				currentIndex = -1;
+			}
+			else
+			{
+				//if (popnext[chromsToTest[++currentIndex]].fit != 0) // increase current index by 1
+				//{
+				//	++currentIndex; // if current chrom fit is not 0, it must have been tested before therefore skip
+				//}
+				if (++currentIndex >= chromsToTest.size()) // update index. if index greater than max, check for mutation which will change currentindex once finished
 				{
-					if (!pickedNewChroms) // has to check if not previously picked new chroms because picknewchroms will cause it to go back to here 
+					if (rand() % 2 == 1)
 					{
-						PickNewChroms();
+						Mutation();
 					}
 					else
 					{
-						pickedNewChroms = false; // reset pickednewchroms to allow it to be used next time
-						currentIndex = -1;
+						if (!pickedNewChroms) // has to check if not previously picked new chroms because picknewchroms will cause it to go back to here 
+						{
+							PickNewChroms();
+						}
+						else
+						{
+							pickedNewChroms = false; // reset pickednewchroms to allow it to be used next time
+							currentIndex = -1;
+						}
 					}
 				}
 			}
 		}
-	}
-	
-	// found fitness of each chroms that needed testing, now to sort and crossover
-	if (currentIndex == -1)
-	{
-		chromsToTest.clear(); // clear chromstotest because they have all been tested
-		PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
-		Selection();
-		//Crossover();
-		if (chromsToTest.empty())
+
+		// found fitness of each chroms that needed testing, now to sort and crossover
+		if (currentIndex == -1)
 		{
-			Update(); // redo update if empty, to do mutation/picknewchroms
+			chromsToTest.clear(); // clear chromstotest because they have all been tested
+			PickChroms(); // sort popcurrent to have the highest scoring at the front to be used as parents
+
+			std::cout << "\n========================\n";
+			for (int i = 0; i < POP_SIZE; i++)
+			{
+				std::cout << "Chrom " << i << ": ";
+				for (int j = 0; j < CHROM_BITS; j++)
+				{
+					std::cout << popcurrent[i].bit[j] << " ";
+				}
+				std::cout << std::endl;
+				std::cout << "Score: " << popcurrent[i].fit << std::endl;
+			}
+			std::cout << "========================\n\n";
+
+			Selection();
+			//Crossover();
+			if (chromsToTest.empty())
+			{
+				Update(); // redo update if empty, to do mutation/picknewchroms
+			}
 		}
 	}
 }
@@ -89,14 +143,21 @@ void GA::SetCurrentScore(int score)
 
 int GA::GetCurrentIndex()
 {
-	if (!chromsToTest.empty())
+	if (LOADING_CHROM)
 	{
-		return chromsToTest[currentIndex];
+		return 0;
 	}
 	else
 	{
-		std::cout << "chromsToTest is empty! Using index 0" << std::endl;
-		return 0;
+		if (!chromsToTest.empty())
+		{
+			return chromsToTest[currentIndex];
+		}
+		else
+		{
+			std::cout << "chromsToTest is empty! Using index 0" << std::endl;
+			return 0;
+		}
 	}
 }
 
@@ -164,7 +225,7 @@ void GA::PickChroms()
 		}
 	}
 
-	std::cout << "\n========================\n";
+	/*std::cout << "\n========================\n";
 	for (int i = 0; i < POP_SIZE; i++)
 	{
 		std::cout << "Chrom " << i << ": ";
@@ -175,7 +236,7 @@ void GA::PickChroms()
 		std::cout << std::endl;
 		std::cout << "Score: " << popcurrent[i].fit << std::endl;
 	}
-	std::cout << "========================\n\n";
+	std::cout << "========================\n\n";*/
 
 	for (int i = 0; i < POP_SIZE; i++)
 	{
@@ -189,29 +250,20 @@ void GA::Selection()
 	switch (selectionType)
 	{
 	case 0:
-		//tournament
+		//elitism
 		Crossover();
 		break;
 	case 1:
+		//steadystate
+		SteadyStateSelection();
+		break;
+	case 2:
 		//roulette
 		RouletteSelection();
 		Crossover();
 		break;
-	case 2:
-		//rank
-		break;
-	case 3:
-		//steadystate
-		SteadyStateSelection();
-		break;
 	case 4:
-		//elitism
-		ElitismSelection();
-		Crossover();
-		break;
-	case 5:
-		//boltzmann
-		BoltzmannSelection();
+		//tournament
 		Crossover();
 		break;
 	default:
@@ -274,60 +326,12 @@ void GA::SteadyStateSelection()
 			// indexes contains childindex, so find another
 			childIndex = (rand() % (POP_SIZE - CROSSOVER_PARENTS)) + CROSSOVER_PARENTS;
 		}
+		popnext[childIndex].fit = 0;
 		indexes.push_back(childIndex);
 		std::cout << childIndex << ((i < (steadyStateRemoved - 1)) ? "," : "\n");
 	}
+	PickChroms();
 	SteadyStateCrossover(indexes);
-}
-
-void GA::SteadyStateCrossover(vector<int> indexes)
-{
-	std::cout << "Crossover:" << std::endl;
-
-	int crossPoint = crossoverPoint;
-	if (crossoverPoint == -1)
-	{
-		crossPoint = (rand() % CHROM_BITS) + 1;
-	}
-
-	// start on parent size to start on children
-	for (int i = 0; i < indexes.size(); i++)
-	{
-		chrom currentChrom = popnext[indexes[i]];
-		for (int j = 1; j < crossPoint; j++) // crossing bits below the cross point
-		{
-			// if crossover index greater than 1, take 1. this makes the index different to the index after the cross point
-			int index = j % (CROSSOVER_PARENTS > 1 ? CROSSOVER_PARENTS - 1 : CROSSOVER_PARENTS);
-			chrom crossChrom = popnext[index];
-			popnext[indexes[i]].bit[j] = crossChrom.bit[j];
-			popnext[indexes[i]].bitPosX[j] = crossChrom.bitPosX[j];
-			popnext[indexes[i]].bitPosY[j] = crossChrom.bitPosY[j];
-		}
-		for (int j = crossPoint; j < CHROM_BITS; j++) // crossing bits above the cross point
-		{
-			int index = j % CROSSOVER_PARENTS;
-			chrom crossChrom = popnext[index];
-			popnext[indexes[i]].bit[j] = crossChrom.bit[j];
-			popnext[indexes[i]].bitPosX[j] = crossChrom.bitPosX[j];
-			popnext[indexes[i]].bitPosY[j] = crossChrom.bitPosY[j];
-		}
-		if (popnext[i] != currentChrom)
-		{
-			popnext[indexes[i]].fit = 0;
-			chromsToTest.push_back(indexes[i]);
-		}
-	}
-	currentIndex = 0;
-}
-
-void GA::ElitismSelection()
-{
-
-}
-
-void GA::BoltzmannSelection()
-{
-
 }
 
 void GA::Crossover()
@@ -339,7 +343,7 @@ void GA::Crossover()
 		int crossPoint = crossoverPoint;
 		if (crossoverPoint == -1)
 		{
-			crossPoint = (rand() % CHROM_BITS) + 1;
+			crossPoint = (rand() % (CHROM_BITS - 1)) + 1;
 		}
 
 		// start on parent size to start on children
@@ -371,6 +375,48 @@ void GA::Crossover()
 		}
 		currentIndex = 0;
 	}
+}
+
+void GA::SteadyStateCrossover(vector<int> indexes)
+{
+	std::cout << "Crossover:" << std::endl;
+
+	int crossPoint = crossoverPoint;
+	if (crossoverPoint == -1)
+	{
+		crossPoint = (rand() % (CHROM_BITS - 1)) + 1;
+	}
+
+	// crosses over with remaining chroms
+	int size = POP_SIZE - steadyStateRemoved;
+	for (int i = 0; i < POP_SIZE; i++)
+	{
+		chrom currentChrom = popnext[i];
+		for (int j = 1; j < crossPoint; j++) // crossing bits below the cross point
+		{
+			int index = j % (size > 1 ? size - 1 : size);
+			// use popcurrent so that it does not use duplicate chroms
+			chrom crossChrom = popcurrent[index];
+			popnext[i].bit[j] = crossChrom.bit[j];
+			popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
+			popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
+		}
+		for (int j = crossPoint; j < CHROM_BITS; j++) // crossing bits above the cross point
+		{
+			int index = j % size;
+			// use popcurrent so that it does not use duplicate chroms
+			chrom crossChrom = popcurrent[index];
+			popnext[i].bit[j] = crossChrom.bit[j];
+			popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
+			popnext[i].bitPosY[j] = crossChrom.bitPosY[j];
+		}
+		if (popnext[i] != currentChrom)
+		{
+			popnext[i].fit = 0;
+			chromsToTest.push_back(i);
+		}
+	}
+	currentIndex = 0;
 }
 
 bool GA::Mutation()

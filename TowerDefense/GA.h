@@ -16,11 +16,13 @@ using std::vector;
 #define BOARD_HEIGHT 17 // 18 is full width but too low
 
 // number of chroms
-#define POP_SIZE 10
+#define POP_SIZE 20
 // number of bits per chrom
 #define CHROM_BITS 6
 // number of parents used in crossover
-#define CROSSOVER_PARENTS 2
+#define CROSSOVER_PARENTS 6
+
+#define LOADING_CHROM true
 
 enum towerBit
 {
@@ -84,20 +86,16 @@ private:
 	void Selection();
 
 	// the way parents are selected
-	// 0=tournament, 1=roulette, 2=rank, 3=steady state
-	const int selectionType = 3;
+	// 0=elitism, 1=steady state, 2=roulette
+	const int selectionType = 0;
 	void TournamentSelection();
 
 	void RouletteSelection();
 
 	void SteadyStateSelection();
 	// the number of chroms to be replaced during steady state selection
-	const int steadyStateRemoved = POP_SIZE - CROSSOVER_PARENTS - 4;
+	const int steadyStateRemoved = (POP_SIZE - CROSSOVER_PARENTS) - 4;
 	void SteadyStateCrossover(vector<int> indexes);
-
-	void ElitismSelection();
-
-	void BoltzmannSelection();
 
 	// crossover parents to the children
 	void Crossover();
@@ -130,4 +128,6 @@ private:
 	bool pickedNewChroms = false;
 
 	std::ofstream logFile = std::ofstream("Log.txt", std::ios_base::app);
+
+	chrom loadChrom;
 };

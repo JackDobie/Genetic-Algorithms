@@ -5,28 +5,28 @@ GA::GA()
 	if (LOADING_CHROM)
 	{
 		loadChrom.bit[0] = 1;
-		loadChrom.bitPosX[0] = 12;
-		loadChrom.bitPosY[0] = 10;
+		loadChrom.bitPosX[0] = 18;
+		loadChrom.bitPosY[0] = 9;
 
-		loadChrom.bit[1] = 3;
-		loadChrom.bitPosX[1] = 22;
-		loadChrom.bitPosY[1] = 12;
+		loadChrom.bit[1] = 2;
+		loadChrom.bitPosX[1] = 15;
+		loadChrom.bitPosY[1] = 2;
 
 		loadChrom.bit[2] = 1;
-		loadChrom.bitPosX[2] = 13;
-		loadChrom.bitPosY[2] = 4;
+		loadChrom.bitPosX[2] = 2;
+		loadChrom.bitPosY[2] = 14;
 
 		loadChrom.bit[3] = 3;
-		loadChrom.bitPosX[3] = 21;
-		loadChrom.bitPosY[3] = 2;
+		loadChrom.bitPosX[3] = 22;
+		loadChrom.bitPosY[3] = 13;
 
 		loadChrom.bit[4] = 1;
-		loadChrom.bitPosX[4] = 7;
+		loadChrom.bitPosX[4] = 4;
 		loadChrom.bitPosY[4] = 14;
 
-		loadChrom.bit[5] = 3;
-		loadChrom.bitPosX[5] = 17;
-		loadChrom.bitPosY[5] = 1;
+		loadChrom.bit[5] = 2;
+		loadChrom.bitPosX[5] = 5;
+		loadChrom.bitPosY[5] = 7;
 
 		popcurrent[0] = loadChrom;
 		popnext[0] = loadChrom;
@@ -47,7 +47,7 @@ void GA::Update()
 {
 	if (LOADING_CHROM)
 	{
-
+		std::cout << "Score: " << popcurrent[0].fit << std::endl;
 	}
 	else
 	{
@@ -132,11 +132,19 @@ void GA::Update()
 
 void GA::SetCurrentScore(int score)
 {
-	if (currentIndex != -1)
+	if (LOADING_CHROM)
 	{
-		if (!chromsToTest.empty())
+		popcurrent[0].fit = score;
+		popnext[0].fit = score;
+	}
+	else
+	{
+		if (currentIndex != -1)
 		{
-			popnext[chromsToTest[currentIndex]].fit = score;
+			if (!chromsToTest.empty())
+			{
+				popnext[chromsToTest[currentIndex]].fit = score;
+			}
 		}
 	}
 }

@@ -14,10 +14,9 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
+TowerDefense/[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
+TowerDefense/[Rr]elease/
 x64/
 x86/
 bld/
@@ -334,3 +333,5 @@ ASALocalRun/
 .localhistory/
 
 *.txt
+Release/TowerDefense.exe
+Debug/TowerDefense.exe

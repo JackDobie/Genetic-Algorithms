@@ -34,8 +34,8 @@ private:
 	// This is used by the upgrade button
 	Tower* boardTower = nullptr;
 
-	const float gameSpeed = 1.0f;
-	float inverseGameSpeed = 1 / gameSpeed;
+	const float gameSpeed = 5.0f;
+	const float inverseGameSpeed = 1.0f / gameSpeed;
 
 public:
 	GameState(Timer* timer);

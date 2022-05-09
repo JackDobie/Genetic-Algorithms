@@ -16,13 +16,13 @@ using std::vector;
 #define BOARD_HEIGHT 17 // 18 is full width but too low
 
 // number of chroms
-#define POP_SIZE 20
+#define POP_SIZE 30
 // number of bits per chrom
-#define CHROM_BITS 6
+#define CHROM_BITS 10
 // number of parents used in crossover
-#define CROSSOVER_PARENTS 6
+#define CROSSOVER_PARENTS 10
 
-#define LOADING_CHROM true
+#define LOADING_CHROM false
 
 enum towerBit
 {
@@ -108,7 +108,7 @@ private:
 	// random chance to pick new chroms. creates random bits for the lowest scoring towers. amount defined by NEW_CHROMS
 	void PickNewChroms();
 	// number of chroms to be randomly generated in picknewchroms()
-	const int newChroms = 4;
+	const int newChroms = 10;
 
 	// save the current best chroms to a log file
 	void LogBestChroms();

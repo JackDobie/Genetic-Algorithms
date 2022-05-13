@@ -365,7 +365,7 @@ void GA::Crossover()
 			for (int j = 1; j < crossPoint; j++) // crossing bits below the cross point
 			{
 				// if crossover index greater than 1, take 1. this makes the index different to the index after the cross point
-				int index = ((i - CROSSOVER_PARENTS) + j) % CROSSOVER_PARENTS;
+				int index = i % CROSSOVER_PARENTS;
 				chrom crossChrom = popnext[index];
 				popnext[i].bit[j] = crossChrom.bit[j];
 				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
@@ -373,7 +373,7 @@ void GA::Crossover()
 			}
 			for (int j = crossPoint; j < CHROM_BITS; j++) // crossing bits above the cross point
 			{
-				int index = ((i - CROSSOVER_PARENTS) + j) % (CROSSOVER_PARENTS + 1);
+				int index = (i + 1) % CROSSOVER_PARENTS;
 				chrom crossChrom = popnext[index];
 				popnext[i].bit[j] = crossChrom.bit[j];
 				popnext[i].bitPosX[j] = crossChrom.bitPosX[j];
